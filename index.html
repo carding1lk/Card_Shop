@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAXX AUTOSHOP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #050505; color: #fff; padding-bottom: 90px; }
+        .tab { display: none; }
+        .active { display: block; }
+        .card { background: linear-gradient(145deg, #121212, #0a0a0a); border: 1px solid #222; border-radius: 25px; padding: 20px; margin: 20px 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
+        .card img { width: 100%; height: 180px; border-radius: 18px; object-fit: cover; margin-bottom: 15px; }
+        .price { font-size: 20px; font-weight: 800; color: #00e676; margin-bottom: 15px; }
+        .btn { background: #fff; color: #000; width: 100%; padding: 16px; border: none; border-radius: 15px; font-weight: 900; cursor: pointer; }
+        input { width: 100%; padding: 15px; margin: 10px 0; background: #111; border: 1px solid #333; border-radius: 12px; color: #fff; }
+        .nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; justify-content: space-around; padding: 20px; border-top: 1px solid #222; z-index: 1000; }
+        .nav div { color: #555; font-weight: bold; cursor: pointer; }
+        .nav .active-nav { color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div id="home-tab" class="tab active">
+        <h2 style="padding: 20px;">CARD SHOP</h2>
+        <div id="product-list"></div>
+    </div>
+
+    <div id="deposit-tab" class="tab">
+        <div class="card">
+            <h3>Deposit Center</h3>
+            <input type="number" id="amt" placeholder="Enter Amount" oninput="updateQR()">
+            <div id="qr-box" style="text-align:center; display:none;"><img id="qr-img" style="width:200px; background:#fff; padding:10px; border-radius:15px; margin-top:15px;"></div>
+            <input type="text" id="txn" placeholder="Transaction ID">
+            <button class="btn" onclick="submitReq()">SUBMIT PAYMENT</button>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="active-nav" onclick="showTab('home-tab', this)">HOME</div>
+        <div onclick="showTab('deposit-tab', this)">DEPOSIT</div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        
+        const db = getDatabase(initializeApp({ databaseURL: "https://gemini-7bb24-default-rtdb.firebaseio.com" }));
+        const MY_UPI = "subhash84@fam"; // আপনার ইউপিআই আইডি
+
+        window.showTab = (id, el) => {
+            document.querySelectorAll('.tab').forEach(t => t.className = 'tab');
+            document.getElementById(id).className = 'tab active';
+            document.querySelectorAll('.nav div').forEach(n => n.className = '');
+            el.className = 'active-nav';
+        };
+
+        window.updateQR = () => {
+            let amt = document.getElementById('amt').value;
+            let img = document.getElementById('qr-img');
+            let box = document.getElementById('qr-box');
+            if(amt > 0) {
+                img.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=upi://pay?pa=${MY_UPI}&am=${amt}`;
+                box.style.display = 'block';
+            } else { box.style.display = 'none'; }
+        };
+
+        onValue(ref(db, 'products/'), (s) => {
+            let list = document.getElementById('product-list');
+            list.innerHTML = "";
+            s.forEach((c) => {
+                let p = c.val();
+                let upiLink = `upi://pay?pa=${MY_UPI}&pn=FAXX_SHOP&am=${p.price}&cu=INR`;
+                list.innerHTML += `
+                <div class="card">
+                    <img src="${p.image}">
+                    <h3>${p.name}</h3>
+                    <p style="color:#aaa; margin:10px 0;">${p.desc}</p>
+                    <div class="price">PRICE: ₹${p.price}</div>
+                    <button class="btn" onclick="window.location.href='${upiLink}'">BUY NOW ₹${p.price}</button>
+                </div>`;
+            });
+        });
+
+        window.submitReq = () => {
+            let amt = document.getElementById('amt').value;
+            let txn = document.getElementById('txn').value;
+            if(!amt || !txn) return alert("Fill all fields!");
+            push(ref(db, 'payments/pending/'), { amount: amt, txn: txn, time: new Date().toLocaleTimeString() });
+            alert("Request Sent!");
+        };
+    </script>
+</body>
+</html>
