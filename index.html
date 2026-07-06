@@ -4886,6 +4886,32 @@
     console.log('💡 Users can spin if spinBalance > 0 only');
     console.log('📌 Admin can give/remove spins from Admin Panel');
   </script>
- 
+   <script>
+document.addEventListener('click', function(e) {
+    var anchor = e.target.closest('a');
+    if (anchor && anchor.href) {
+        var url = anchor.href;
+        if (url.includes('youtube.com') || url.includes('youtu.be')) {
+            e.preventDefault(); 
+            var videoId = "";
+            if (url.includes('v=')) {
+                videoId = url.split('v=')[1].split('&')[0];
+            } else if (url.includes('youtu.be/')) {
+                videoId = url.split('youtu.be/')[1].split('?')[0];
+            } else if (url.includes('shorts/')) {
+                videoId = url.split('shorts/')[1].split('?')[0];
+            } else if (url.includes('embed/')) {
+                videoId = url.split('embed/')[1].split('?')[0];
+            }
+            if (videoId) {
+                window.location.href = "intent://www.youtube.com/watch?v=" + videoId + "#Intent;package=com.google.android.youtube;scheme=https;end;";
+            } else {
+                window.location.href = "intent://" + url.replace(/^https?:\/\//, '') + "#Intent;scheme=https;end;";
+            }
+        }
+    }
+}, true);
+</script>
+
 </body>
 </html>
