@@ -1,362 +1,4891 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KHELO INDIA  | Next-Gen Gaming</title>
-    
-    <!-- Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>SOCIAL SPIN</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js">
+  </script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js">
+  </script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    /* Your existing CSS remains unchanged */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    <style>
-        :root {
-            --primary: #00aaff;
-            --secondary: #bd00ff;
-            --success: #00ff88;
-            --accent-pink: #ff00c8;
-            --bg: #030303;
-            --card-bg: rgba(255, 255, 255, 0.04);
-            --elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+    :root {
+      --primary: #6C63FF;
+      --primary-dark: #5A52D5;
+      --primary-light: #EEEDFF;
+      --success: #2ED573;
+      --warning: #FFA502;
+      --danger: #FF4757;
+      --dark: #1A1A2E;
+      --gray: #8A8AAA;
+      --light-gray: #F5F6FA;
+      --white: #FFFFFF;
+      --shadow: 0 8px 30px rgba(108, 99, 255, 0.12);
+      --shadow-hover: 0 12px 40px rgba(108, 99, 255, 0.2);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
 
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
+    body {
+      background: var(--light-gray);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
 
-        body {
-            background-color: var(--bg);
-            color: #fff;
-            overflow-x: hidden;
-            background-image: url('https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/6cfbffa5-fae2-4a49-b370-d6c8254c7bfa.png');
-            background-size: cover;
-            background-attachment: fixed;
-            background-position: center;
-        }
+    .app-container {
+      width: 100%;
+      max-width: 430px;
+      height: 100vh;
+      height: 100dvh;
+      background: var(--white);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.08);
+    }
 
-        .overlay {
-            background: linear-gradient(180deg, rgba(3, 3, 3, 0.9) 0%, rgba(3, 3, 3, 0.98) 100%);
-            min-height: 100vh;
-        }
+    .verified-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: linear-gradient(135deg, #1DA1F2, #0D8BD9);
+      color: white;
+      padding: 2px 10px 2px 6px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+    .verified-badge .material-icons {
+      font-size: 14px;
+    }
 
-        /* --- White Shimmer Sweep Effect --- */
-        .shimmer-btn {
-            position: relative;
-            overflow: hidden;
-        }
-        .shimmer-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -150%; width: 50%; height: 100%;
-            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transform: skewX(-25deg);
-            animation: shimmerEffect 3s infinite;
-        }
-        @keyframes shimmerEffect {
-            0% { left: -150%; }
-            30% { left: 150%; }
-            100% { left: 150%; }
-        }
+    .history-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      box-shadow: var(--shadow);
+      border-left: 4px solid var(--primary);
+    }
 
-        /* --- Header Logo --- */
-        .logo-wrap { padding: 50px 0 20px; display: flex; justify-content: center; }
-        .logo-main {
-            width: 90px; height: 90px; border-radius: 50%;
-            border: 3px solid var(--primary);
-            transition: 0.5s var(--elastic);
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 170, 255, 0.2);
-        }
-        .logo-main:hover { transform: translateY(-15px) scale(1.1); box-shadow: 0 30px 60px rgba(0, 170, 255, 0.5); }
+    .history-item .h-icon {
+      font-size: 28px;
+      width: 40px;
+      text-align: center;
+    }
 
-        /* --- Hero Section --- */
-        .hero { padding: 20px; text-align: center; }
-        .hero h1 {
-            font-weight: 800; font-size: clamp(2.2rem, 8vw, 3rem);
-            background: linear-gradient(to right, #fff, var(--primary));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+    .history-item .h-details {
+      flex: 1;
+    }
 
-        /* --- Portrait Phone --- */
-        .phone-case {
-            width: 250px; height: 520px; margin: 40px auto;
-            background: #000; border: 10px solid #1a1a1a; border-radius: 40px;
-            overflow: hidden; transition: 0.6s var(--elastic);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
-        }
-        .phone-case:hover { transform: translateY(-20px) rotateX(5deg); box-shadow: 0 40px 80px rgba(0, 170, 255, 0.2); }
-        .slider-wrap { display: flex; height: 100%; transition: 1s cubic-bezier(0.8, 0, 0.2, 1); }
-        .slider-wrap img { width: 100%; height: 100%; object-fit: cover; }
+    .history-item .h-details .h-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--dark);
+    }
 
-        /* --- Buttons --- */
-        .btn-box { display: flex; flex-direction: column; gap: 15px; align-items: center; padding: 0 25px; }
-        .btn-premium {
-            width: 100%; max-width: 340px; padding: 18px; border-radius: 18px;
-            text-decoration: none; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 1px; display: flex; align-items: center; justify-content: center;
-            gap: 12px; transition: 0.4s var(--elastic); border: none;
-        }
-        .btn-premium:hover { transform: translateY(-12px); box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .btn-dl { background: linear-gradient(45deg, var(--primary), #0051ff); color: #fff; box-shadow: 0 10px 20px rgba(0, 170, 255, 0.3); }
-        .btn-site { background: rgba(255,255,255,0.05); color: #fff; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(10px); }
-        
-        /* --- Dynamic Developer Button --- */
-        .btn-dev {
-            background: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            transition: all 0.5s ease;
-        }
-        .btn-dev.alt-style {
-            border-color: var(--accent-pink);
-            color: var(--accent-pink);
-            box-shadow: 0 0 20px rgba(255, 0, 200, 0.2);
-        }
+    .history-item .h-details .h-desc {
+      font-size: 12px;
+      color: var(--gray);
+    }
 
-        /* --- Bento Stats --- */
-        .stats-bento { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 50px 20px; }
-        .stat-card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05);
-            padding: 30px 15px; border-radius: 24px; transition: 0.5s var(--elastic);
-            text-align: left; backdrop-filter: blur(10px); cursor: pointer;
-        }
-        .stat-card:hover { transform: translateY(-15px); background: rgba(255, 255, 255, 0.08); }
-        .stat-card h2 { font-size: 2rem; font-weight: 800; margin-bottom: 5px; transition: 0.3s; }
-        .stat-dl:hover h2 { color: var(--primary); }
-        .stat-user:hover h2 { color: var(--secondary); }
-        .stat-likes:hover h2 { color: var(--success); }
+    .history-item .h-amount {
+      font-weight: 700;
+      font-size: 16px;
+    }
 
-        /* --- Core Features --- */
-        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 15px; padding: 0 20px 60px; }
-        .feat-card {
-            background: var(--card-bg); border: 1px solid rgba(255,255,255,0.03);
-            padding: 25px 15px; border-radius: 22px; transition: 0.4s var(--elastic);
-            text-align: center; cursor: pointer;
-        }
-        .feat-card:hover { transform: translateY(-12px); border-color: var(--primary); box-shadow: 0 20px 40px rgba(0, 170, 255, 0.15); }
-        .feat-card i { font-size: 2rem; color: var(--primary); margin-bottom: 12px; display: inline-block; }
-        .feat-card h4 { font-size: 0.85rem; font-weight: 700; color: #fff; }
+    .history-item .h-amount.plus {
+      color: var(--success);
+    }
 
-        /* --- Modal Popup --- */
-        #featureModal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); display: none; align-items: center;
-            justify-content: center; z-index: 9999; padding: 20px; backdrop-filter: blur(10px);
-        }
-        .modal-content {
-            background: #111; border: 2px solid var(--primary); padding: 30px;
-            border-radius: 25px; max-width: 400px; text-align: center;
-            animation: modalIn 0.4s var(--elastic);
-        }
-        @keyframes modalIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-content h3 { color: var(--primary); margin-bottom: 15px; font-weight: 800; }
-        .modal-content p { color: #ccc; font-size: 0.95rem; line-height: 1.6; }
-        .close-btn { margin-top: 20px; padding: 10px 25px; background: var(--primary); color: #000; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    .history-item .h-amount.minus {
+      color: var(--danger);
+    }
 
-        /* --- Motivational Footer --- */
-        footer { padding: 60px 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); background: rgba(0,0,0,0.4); }
-        .motivation-text {
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--success);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-            display: block;
-            text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
-            animation: pulseText 2s infinite ease-in-out;
-        }
-        @keyframes pulseText {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.05); opacity: 1; }
-        }
-        .footer-copy { color: #444; font-size: 0.75rem; font-weight: 700; margin-top: 20px; display: block; }
+    .history-item .h-time {
+      font-size: 10px;
+      color: var(--gray);
+      margin-top: 2px;
+    }
 
-        .reveal { opacity: 0; transform: translateY(30px); transition: 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+    .coin-history-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
 
-    </style>
+    .coin-history-modal.show {
+      display: flex;
+    }
+
+    .coin-history-modal .history-sheet {
+      background: var(--white);
+      width: 100%;
+      max-width: 430px;
+      max-height: 80vh;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 30px;
+      animation: slideUp 0.3s ease;
+      overflow-y: auto;
+    }
+
+    .coin-history-modal .history-sheet .handle {
+      width: 40px;
+      height: 4px;
+      background: var(--light-gray);
+      border-radius: 10px;
+      margin: 0 auto 16px;
+    }
+
+    .coin-history-modal .history-sheet .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .coin-history-modal .history-sheet .header h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .coin-history-modal .history-sheet .header .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--gray);
+      touch-action: manipulation;
+    }
+
+    .admin-spin-panel {
+      background: linear-gradient(135deg, #1a1a3e, #2d2d6e);
+      border-radius: var(--radius);
+      padding: 16px;
+      color: white;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 215, 0, 0.2);
+    }
+
+    .admin-spin-panel .admin-title {
+      font-size: 13px;
+      color: #FFD700;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .admin-spin-panel .admin-desc {
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 10px;
+    }
+
+    .admin-spin-panel .admin-user-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .admin-spin-panel .admin-user-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      margin-bottom: 4px;
+    }
+
+    .admin-spin-panel .admin-user-item .user-name {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .admin-spin-panel .admin-user-item .user-coins {
+      font-size: 12px;
+      opacity: 0.6;
+    }
+
+    .admin-spin-panel .admin-user-item .give-spin-btn {
+      padding: 4px 12px;
+      background: #FFD700;
+      color: #1a1a2e;
+      border: none;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .admin-spin-panel .admin-user-item .give-spin-btn:active {
+      transform: scale(0.95);
+    }
+
+    .update-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(145deg, #0d0d2b, #1a1a3e);
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.5s ease;
+      overflow-y: auto;
+      padding: 20px;
+    }
+
+    .update-overlay.show {
+      display: flex;
+    }
+
+    .update-dialog-full {
+      background: linear-gradient(145deg, #1a1a3e, #2d2d6e);
+      border-radius: 24px;
+      padding: 24px 20px 28px;
+      max-width: 480px;
+      width: 100%;
+      max-height: 95vh;
+      overflow-y: auto;
+      position: relative;
+      border: 1px solid rgba(255, 215, 0, 0.12);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7);
+      animation: slideUp 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .update-dialog-full::-webkit-scrollbar {
+      width: 3px;
+    }
+    .update-dialog-full::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+
+    .update-dialog-full .update-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #FFD700, #F0A500);
+      color: var(--dark);
+      padding: 4px 16px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .update-dialog-full .update-title {
+      font-size: 22px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 4px;
+      line-height: 1.2;
+    }
+
+    .update-dialog-full .update-subtitle {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-bottom: 14px;
+    }
+
+    .update-slider-container-full {
+      position: relative;
+      width: 100%;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      background: rgba(255, 255, 255, 0.04);
+      aspect-ratio: 9 / 16;
+    }
+
+    .update-slider-container-full .update-slider-track {
+      display: flex;
+      transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+      height: 100%;
+    }
+
+    .update-slider-container-full .update-slide {
+      min-width: 100%;
+      height: 100%;
+      padding: 2px;
+    }
+
+    .update-slider-container-full .update-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .screenshot-size-info {
+      text-align: center;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.35);
+      margin-bottom: 10px;
+      font-weight: 500;
+      letter-spacing: 0.3px;
+    }
+
+    .slider-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .slider-dots .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    .slider-dots .dot.active {
+      background: #FFD700;
+      width: 24px;
+      border-radius: 4px;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .update-progress {
+      width: 100%;
+      height: 3px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+
+    .update-progress .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #FFD700, #FF6B6B);
+      border-radius: 10px;
+      transition: width 1s ease;
+      width: 0%;
+    }
+
+    .update-timer {
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 16px;
+      padding: 12px 16px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 14px;
+    }
+
+    .update-timer .timer-label {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.5);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .update-timer .timer-display {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .update-timer .timer-display .time-block {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .update-timer .timer-display .time-block .number {
+      font-size: 26px;
+      font-weight: 900;
+      color: white;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 2px 10px;
+      border-radius: 10px;
+      min-width: 42px;
+      text-align: center;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .update-timer .timer-display .time-block .label {
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.4);
+      text-transform: uppercase;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    .update-timer .timer-display .colon {
+      font-size: 26px;
+      font-weight: 900;
+      color: rgba(255, 255, 255, 0.25);
+      padding-top: 2px;
+    }
+
+    .update-action-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 16px;
+      font-weight: 800;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      touch-action: manipulation;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .update-action-btn:active {
+      transform: scale(0.97);
+    }
+
+    .update-action-btn.primary {
+      background: linear-gradient(135deg, #FFD700, #F0A500);
+      color: var(--dark);
+      box-shadow: 0 8px 30px rgba(255, 215, 0, 0.25);
+    }
+
+    .update-action-btn.primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(255, 215, 0, 0.35);
+    }
+
+    .update-action-btn.primary:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    .update-action-btn .btn-icon {
+      font-size: 20px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    .update-action-btn.primary.pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.02);
+      }
+    }
+
+    .update-help-link {
+      display: block;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.25);
+      font-size: 12px;
+      margin-top: 12px;
+      text-decoration: none;
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .update-help-link:hover {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .main-content {
+      flex: 1;
+      overflow: hidden;
+      position: relative;
+      background: var(--light-gray);
+      padding-top: 8px;
+    }
+
+    .page-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      overflow-y: auto;
+      padding: 12px 16px 10px;
+      opacity: 0;
+      transform: translateX(40px);
+      transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+      background: var(--light-gray);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .page-container.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .page-container.slide-out {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+
+    .page-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .page-container::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .page-container::-webkit-scrollbar-thumb {
+      background: var(--primary);
+      border-radius: 10px;
+    }
+
+    .bottom-nav {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      background: var(--white);
+      padding: 6px 10px 12px;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+      flex-shrink: 0;
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: var(--gray);
+      font-size: 9px;
+      cursor: pointer;
+      padding: 4px 12px;
+      border-radius: 30px;
+      transition: 0.2s;
+      background: transparent;
+      border: none;
+      gap: 2px;
+      touch-action: manipulation;
+    }
+
+    .nav-item:active {
+      transform: scale(0.92);
+    }
+
+    .nav-item i {
+      font-size: 22px;
+      transition: 0.2s;
+      pointer-events: none;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item.active i {
+      transform: translateY(-2px);
+    }
+
+    .nav-item .nav-label {
+      font-weight: 600;
+      font-size: 9px;
+      pointer-events: none;
+    }
+
+    .home-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .home-header .greeting {
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 400;
+    }
+
+    .home-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .home-header .coin-badge {
+      background: var(--primary-light);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .home-header .coin-badge:active {
+      transform: scale(0.95);
+    }
+
+    .stories-row {
+      display: flex;
+      gap: 14px;
+      padding: 4px 0 16px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .stories-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .story-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+      touch-action: manipulation;
+    }
+
+    .story-item:active {
+      transform: scale(0.95);
+    }
+
+    .story-ring {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, var(--primary), #FF6584);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .story-ring .story-avatar {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid white;
+      background: var(--light-gray);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .story-ring .story-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .story-item .story-name {
+      font-size: 10px;
+      color: var(--gray);
+      font-weight: 500;
+      max-width: 60px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .story-item.add-story .story-ring {
+      background: var(--light-gray);
+    }
+
+    .story-item.add-story .story-ring .story-avatar {
+      border: 2px dashed var(--primary);
+      background: var(--primary-light);
+      color: var(--primary);
+      font-size: 24px;
+    }
+
+    .post-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      transition: 0.2s;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .post-card:active {
+      transform: scale(0.99);
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .post-avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .post-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .post-user-info {
+      flex: 1;
+    }
+
+    .post-user-info .username {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .post-user-info .time {
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    .post-content {
+      margin-bottom: 12px;
+    }
+
+    .post-content .post-text {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .post-content .post-image {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      max-height: 300px;
+      object-fit: cover;
+      background: var(--light-gray);
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 20px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .post-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: none;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray);
+      cursor: pointer;
+      transition: 0.2s;
+      touch-action: manipulation;
+    }
+
+    .post-action-btn:active {
+      transform: scale(0.92);
+    }
+
+    .post-action-btn.liked {
+      color: var(--danger);
+    }
+
+    .post-action-btn .icon {
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    .search-page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .search-page-header .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+      touch-action: manipulation;
+    }
+
+    .search-page-header .back-btn:active {
+      transform: scale(0.9);
+    }
+
+    .search-page-header .search-input-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 0 16px;
+      box-shadow: var(--shadow);
+      border: 2px solid transparent;
+      transition: 0.3s;
+    }
+
+    .search-page-header .search-input-wrap:focus-within {
+      border-color: var(--primary);
+    }
+
+    .search-page-header .search-input-wrap input {
+      flex: 1;
+      padding: 12px 8px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: transparent;
+      color: var(--dark);
+    }
+
+    .search-page-header .search-input-wrap input::placeholder {
+      color: var(--gray);
+    }
+
+    .search-page-header .search-input-wrap .clear-btn {
+      color: var(--gray);
+      cursor: pointer;
+      padding: 4px;
+      display: none;
+      touch-action: manipulation;
+    }
+
+    .search-page-header .search-input-wrap .clear-btn.show {
+      display: block;
+    }
+
+    .user-result-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 16px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      box-shadow: var(--shadow);
+      transition: 0.2s;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .user-result-card:active {
+      transform: scale(0.98);
+    }
+
+    .user-result-card .user-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .user-result-card .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .user-result-card .user-info {
+      flex: 1;
+    }
+
+    .user-result-card .user-info .name {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--dark);
+    }
+
+    .user-result-card .user-info .handle {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .user-result-card .follow-btn {
+      padding: 6px 18px;
+      border-radius: 30px;
+      border: none;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+      flex-shrink: 0;
+      touch-action: manipulation;
+    }
+
+    .user-result-card .follow-btn:active {
+      transform: scale(0.92);
+    }
+
+    .user-result-card .follow-btn.follow {
+      background: var(--primary);
+      color: white;
+    }
+
+    .user-result-card .follow-btn.following {
+      background: var(--light-gray);
+      color: var(--dark);
+    }
+
+    .profile-header {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      margin-bottom: 16px;
+    }
+
+    .profile-header .cover {
+      width: 100%;
+      height: 80px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      border-radius: var(--radius-sm);
+      margin-bottom: -40px;
+    }
+
+    .profile-header .profile-avatar-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .profile-header .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 4px solid var(--white);
+      overflow: hidden;
+      background: var(--primary-light);
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-header .profile-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-header .profile-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-top: 8px;
+    }
+
+    .profile-header .profile-handle {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .profile-stats .stat {
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .profile-stats .stat .number {
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--dark);
+    }
+
+    .profile-stats .stat .label {
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .settings-btn {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 20px rgba(108, 99, 255, 0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      transition: 0.2s;
+      z-index: 100;
+      touch-action: manipulation;
+    }
+
+    .settings-btn:active {
+      transform: scale(0.9);
+    }
+
+    .settings-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .settings-modal.show {
+      display: flex;
+    }
+
+    .settings-modal .settings-sheet {
+      background: var(--white);
+      width: 100%;
+      max-width: 430px;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 30px;
+      animation: slideUp 0.3s ease;
+    }
+
+    .settings-modal .settings-sheet .handle {
+      width: 40px;
+      height: 4px;
+      background: var(--light-gray);
+      border-radius: 10px;
+      margin: 0 auto 20px;
+    }
+
+    .settings-modal .settings-sheet h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 16px;
+    }
+
+    .settings-modal .settings-sheet .setting-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--light-gray);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      cursor: pointer;
+      transition: 0.2s;
+      border: none;
+      width: 100%;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--dark);
+      touch-action: manipulation;
+    }
+
+    .settings-modal .settings-sheet .setting-item:active {
+      transform: scale(0.98);
+    }
+
+    .settings-modal .settings-sheet .setting-item .icon {
+      font-size: 22px;
+      color: var(--primary);
+      pointer-events: none;
+    }
+
+    .settings-modal .settings-sheet .setting-item.danger {
+      color: var(--danger);
+    }
+
+    .settings-modal .settings-sheet .setting-item.danger .icon {
+      color: var(--danger);
+    }
+
+    @keyframes slideUp {
+      from {
+        transform: translateY(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .chat-messages .message {
+      max-width: 80%;
+      padding: 10px 16px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
+      animation: messageIn 0.3s ease;
+    }
+
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .chat-messages .message.sent {
+      align-self: flex-end;
+      background: var(--primary);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-messages .message.received {
+      align-self: flex-start;
+      background: var(--white);
+      color: var(--dark);
+      border-bottom-left-radius: 4px;
+      box-shadow: var(--shadow);
+    }
+
+    .chat-messages .message .time {
+      font-size: 9px;
+      opacity: 0.6;
+      margin-top: 4px;
+      display: block;
+    }
+
+    .chat-input-wrap {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0;
+      background: var(--white);
+      border-top: 1px solid rgba(0, 0, 0, 0.04);
+    }
+
+    .chat-input-wrap input {
+      flex: 1;
+      padding: 10px 16px;
+      border: 2px solid var(--light-gray);
+      border-radius: 30px;
+      outline: none;
+      font-size: 14px;
+      transition: 0.3s;
+      background: var(--light-gray);
+    }
+
+    .chat-input-wrap input:focus {
+      border-color: var(--primary);
+      background: var(--white);
+    }
+
+    .chat-input-wrap .send-btn {
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: none;
+      background: var(--primary);
+      color: white;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      touch-action: manipulation;
+    }
+
+    .chat-input-wrap .send-btn:active {
+      transform: scale(0.92);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--gray);
+    }
+
+    .empty-state .icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.4;
+    }
+
+    .empty-state .title {
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--dark);
+    }
+
+    .empty-state .sub {
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .auth-container {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      padding: 40px 30px;
+      background: var(--white);
+    }
+
+    .auth-container.active {
+      display: flex;
+    }
+
+    .auth-container .auth-logo {
+      width: 80px;
+      height: 80px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 40px rgba(108, 99, 255, 0.3);
+      background: var(--white);
+    }
+
+    .auth-container h1 {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--dark);
+    }
+
+    .auth-container h1 span {
+      color: var(--primary);
+    }
+
+    .auth-container .subtitle {
+      color: var(--gray);
+      margin-bottom: 28px;
+      font-size: 14px;
+    }
+
+    .auth-input {
+      width: 100%;
+      padding: 14px 18px;
+      border: 2px solid var(--light-gray);
+      border-radius: var(--radius);
+      font-size: 14px;
+      outline: none;
+      margin-bottom: 12px;
+      background: var(--light-gray);
+      transition: 0.3s;
+    }
+
+    .auth-input:focus {
+      border-color: var(--primary);
+      background: var(--white);
+    }
+
+    .auth-btn {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      touch-action: manipulation;
+    }
+
+    .auth-btn:active {
+      transform: scale(0.97);
+    }
+
+    .auth-btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 8px 24px rgba(108, 99, 255, 0.3);
+    }
+
+    .auth-switch {
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--gray);
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .auth-switch:active {
+      opacity: 0.7;
+    }
+
+    .auth-switch span {
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .auth-error {
+      color: var(--danger);
+      font-size: 13px;
+      margin-bottom: 10px;
+      display: none;
+      text-align: center;
+    }
+
+    .app-content {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .app-content.active {
+      display: flex;
+    }
+
+    .spin-container {
+      background: linear-gradient(145deg, #1a1a3e, #0d0d2b);
+      border-radius: var(--radius);
+      padding: 30px 20px 25px;
+      text-align: center;
+      box-shadow: 0 10px 50px rgba(108, 99, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .spin-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle at center, rgba(108, 99, 255, 0.08) 0%, transparent 70%);
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+
+    @keyframes glowPulse {
+      0%,
+      100% {
+        transform: scale(1);
+        opacity: 0.5;
+      }
+      50% {
+        transform: scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    .coin-display {
+      background: rgba(255, 255, 255, 0.06);
+      padding: 10px 24px;
+      border-radius: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .coin-display .coin-icon {
+      font-size: 26px;
+    }
+
+    .coin-display .coin-label {
+      font-size: 14px;
+      font-weight: 400;
+      opacity: 0.6;
+      color: white;
+    }
+
+    .new-wheel-pointer {
+      position: absolute;
+      top: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 100;
+      width: 36px;
+      height: 32px;
+      background: linear-gradient(135deg, #fff380, #ffd700, #b8860b);
+      clip-path: polygon(50% 100%, 0 0, 100% 0);
+      filter: drop-shadow(0px 6px 4px rgba(0, 0, 0, 0.5));
+    }
+
+    .new-outer-rim {
+      position: relative;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: #104fe6;
+      padding: 14px;
+      box-shadow: 0 0 40px rgba(16, 79, 230, 0.4), inset 0 0 20px rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .new-lights-container {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .new-led-light {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      top: 6px;
+      left: calc(50% - 4.5px);
+    }
+
+    .new-wheel-svg {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transition: transform 6s cubic-bezier(0.15, 0.85, 0.2, 1.01);
+      z-index: 10;
+      cursor: pointer;
+    }
+
+    .new-wheel-svg text {
+      font-size: 12px;
+      font-weight: 900;
+      font-family: Arial, sans-serif;
+    }
+
+    .new-spin-btn {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 76px;
+      height: 76px;
+      background: radial-gradient(circle, #ffffff 0%, #dcdde1 60%, #abc0e4 100%);
+      border: 4px solid #ffd700;
+      border-radius: 50%;
+      z-index: 110;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #104fe6;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), inset 0 -4px 10px rgba(0, 0, 0, 0.3), inset 0 4px 10px #fff;
+      user-select: none;
+      transition: 0.1s ease;
+      touch-action: manipulation;
+    }
+
+    .new-spin-btn:active {
+      transform: translateX(-50%) scale(0.92);
+    }
+
+    .new-spin-btn:disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .withdraw-card {
+      background: linear-gradient(135deg, var(--dark), #2A2A4A);
+      border-radius: var(--radius);
+      padding: 20px;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .withdraw-card .label {
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    .withdraw-card .amount {
+      font-size: 36px;
+      font-weight: 800;
+      color: #FFD700;
+    }
+
+    .withdraw-card .sub {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 4px;
+    }
+
+    .withdraw-box {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .withdraw-box input {
+      width: 100%;
+      padding: 10px 16px;
+      border: 2px solid var(--light-gray);
+      border-radius: var(--radius-sm);
+      outline: none;
+      font-size: 14px;
+      transition: 0.3s;
+      margin-bottom: 8px;
+    }
+
+    .withdraw-box input:focus {
+      border-color: var(--primary);
+    }
+
+    .withdraw-box .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .withdraw-box .btn-row input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .withdraw-box .btn-row .withdraw-btn {
+      padding: 10px 20px;
+      background: linear-gradient(135deg, #FFD700, #F0A500);
+      color: var(--dark);
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      touch-action: manipulation;
+    }
+
+    .withdraw-box .btn-row .withdraw-btn:active {
+      transform: scale(0.95);
+    }
+
+    .withdraw-box .note {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 8px;
+    }
+
+    .history-btn {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: 2px solid var(--primary);
+      color: var(--primary);
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 12px;
+      touch-action: manipulation;
+    }
+
+    .history-btn:active {
+      transform: scale(0.97);
+    }
+
+    .withdraw-logo {
+      width: 100%;
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+    }
+
+    .withdraw-logo img {
+      width: 100%;
+      border-radius: var(--radius-sm);
+    }
+
+    .amount-btn {
+      padding: 12px;
+      border: 2px solid var(--light-gray);
+      border-radius: var(--radius-sm);
+      background: var(--white);
+      cursor: pointer;
+      transition: 0.3s;
+      font-weight: 600;
+      font-size: 14px;
+      touch-action: manipulation;
+    }
+
+    .amount-btn:active {
+      transform: scale(0.95);
+    }
+
+    .amount-btn.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .redeem-code-display {
+      background: var(--light-gray);
+      padding: 12px 16px;
+      border-radius: var(--radius-sm);
+      text-align: center;
+      margin-top: 8px;
+      border: 1px dashed var(--gray);
+    }
+
+    .copy-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      touch-action: manipulation;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: 0.2s;
+    }
+
+    .copy-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+    }
+
+    .copy-btn:active {
+      transform: scale(0.95);
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 9999;
+      display: none;
+      max-width: 90%;
+      text-align: center;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 430px) {
+      .app-container {
+        max-width: 100%;
+      }
+    }
+
+    .promo-video-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      transition: all 0.4s ease;
+      animation: fadeIn 0.4s ease;
+    }
+
+    .promo-video-card .video-thumb-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      background: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .promo-video-card .video-thumb-wrapper img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .promo-video-card .video-thumb-wrapper .watch-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.3);
+      transition: 0.3s;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .promo-video-card .video-thumb-wrapper .watch-overlay:hover {
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    .promo-video-card .video-thumb-wrapper .watch-overlay .watch-btn {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      color: white;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: 0.3s;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .promo-video-card .video-title {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--dark);
+      margin-bottom: 4px;
+    }
+
+    .promo-video-card .video-desc {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 6px;
+    }
+
+    .promo-video-card .promo-time {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 6px;
+    }
+
+    .promo-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .promo-header .back-btn {
+      background: none;
+      border: none;
+      color: var(--dark);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+      touch-action: manipulation;
+    }
+
+    .promo-header .back-btn:active {
+      transform: scale(0.9);
+    }
+
+    .promo-header h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--dark);
+    }
+
+    .promo-header .coin-badge-small {
+      background: var(--primary-light);
+      padding: 4px 14px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+    }
+
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 0 12px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+      margin-bottom: 10px;
+    }
+
+    .chat-header .back-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: var(--dark);
+      touch-action: manipulation;
+      padding: 4px;
+    }
+
+    .chat-header .back-btn:active {
+      transform: scale(0.9);
+    }
+
+    .chat-header .chat-user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .chat-header .chat-user-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: var(--primary-light);
+      flex-shrink: 0;
+    }
+
+    .chat-header .chat-user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .chat-header .chat-user-details .name {
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--dark);
+    }
+
+    .chat-header .chat-user-details .status-text {
+      font-size: 11px;
+      color: var(--gray);
+    }
+
+    .chat-header .chat-user-details .status-text.online {
+      color: var(--success);
+    }
+
+    .create-post-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(5px);
+    }
+
+    .create-post-modal.show {
+      display: flex;
+    }
+
+    .create-post-modal .post-sheet {
+      background: var(--white);
+      width: 100%;
+      max-width: 430px;
+      border-radius: 24px 24px 0 0;
+      padding: 24px 20px 30px;
+      animation: slideUp 0.3s ease;
+    }
+
+    .create-post-modal .post-sheet .handle {
+      width: 40px;
+      height: 4px;
+      background: var(--light-gray);
+      border-radius: 10px;
+      margin: 0 auto 16px;
+    }
+
+    .create-post-modal .post-sheet h3 {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 12px;
+    }
+
+    .create-post-modal .post-sheet textarea {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid var(--light-gray);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      outline: none;
+      resize: vertical;
+      min-height: 80px;
+      font-family: 'Inter', sans-serif;
+      transition: 0.3s;
+    }
+
+    .create-post-modal .post-sheet textarea:focus {
+      border-color: var(--primary);
+    }
+
+    .create-post-modal .post-sheet .photo-preview {
+      width: 100%;
+      max-height: 200px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      margin-top: 10px;
+      display: none;
+    }
+
+    .create-post-modal .post-sheet .photo-preview.show {
+      display: block;
+    }
+
+    .create-post-modal .post-sheet .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .create-post-modal .post-sheet .btn-row button {
+      padding: 8px 16px;
+      border-radius: 30px;
+      border: none;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+      transition: 0.2s;
+      touch-action: manipulation;
+    }
+
+    .create-post-modal .post-sheet .btn-row button:active {
+      transform: scale(0.95);
+    }
+
+    .create-post-modal .post-sheet .btn-row .photo-btn {
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .create-post-modal .post-sheet .btn-row .remove-btn {
+      background: var(--light-gray);
+      color: var(--danger);
+    }
+
+    .create-post-modal .post-sheet .url-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 2px solid var(--light-gray);
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      outline: none;
+      margin-top: 8px;
+      transition: 0.3s;
+    }
+
+    .create-post-modal .post-sheet .url-input:focus {
+      border-color: var(--primary);
+    }
+
+    .create-post-modal .post-sheet .submit-btn {
+      width: 100%;
+      padding: 12px;
+      background: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+      margin-top: 12px;
+      touch-action: manipulation;
+    }
+
+    .create-post-modal .post-sheet .submit-btn:active {
+      transform: scale(0.97);
+    }
+
+    .msg-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      margin-bottom: 8px;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: 0.2s;
+      touch-action: manipulation;
+    }
+
+    .msg-row:active {
+      transform: scale(0.98);
+    }
+
+    .msg-row .msg-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .msg-row .msg-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .msg-row .msg-avatar .online-dot {
+      position: absolute;
+      bottom: 2px;
+      right: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--white);
+      background: var(--gray);
+    }
+
+    .msg-row .msg-avatar .online-dot.online {
+      background: var(--success);
+    }
+
+    .msg-row .msg-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .msg-row .msg-info .name {
+      font-weight: 700;
+      color: var(--dark);
+      font-size: 14px;
+    }
+
+    .msg-row .msg-info .status {
+      font-size: 11px;
+      color: var(--gray);
+      margin-top: 1px;
+    }
+
+    .msg-row .msg-info .status.online {
+      color: var(--success);
+    }
+
+    .msg-row .msg-info .last-msg {
+      font-size: 12px;
+      color: var(--gray);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 160px;
+      margin-top: 2px;
+    }
+
+    .msg-row .msg-time {
+      font-size: 10px;
+      color: var(--gray);
+      flex-shrink: 0;
+      margin-left: 4px;
+    }
+
+    .typing-dots {
+      display: inline-flex;
+      gap: 3px;
+    }
+    .typing-dots span {
+      width: 6px;
+      height: 6px;
+      background: var(--primary);
+      border-radius: 50%;
+      animation: typing 1.4s infinite both;
+    }
+    .typing-dots span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+    .typing-dots span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+    @keyframes typing {
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+        opacity: 0.4;
+      }
+      30% {
+        transform: translateY(-8px);
+        opacity: 1;
+      }
+    }
+
+    @keyframes confettiFall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInModal {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* ===== SPIN BALANCE DISPLAY ===== */
+    .spin-balance-box {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: 12px;
+      padding: 8px 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin: 6px 0 12px 0;
+    }
+    .spin-balance-box .spin-icon {
+      font-size: 20px;
+    }
+    .spin-balance-box .spin-label {
+      font-size: 13px;
+      opacity: 0.7;
+      color: white;
+    }
+    .spin-balance-box .spin-count {
+      font-size: 22px;
+      font-weight: 800;
+      color: #FFD700;
+      min-width: 30px;
+      text-align: center;
+    }
+    .spin-balance-box .spin-count.zero {
+      color: #FF4757;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="overlay">
-        <!-- Logo -->
-        <header class="logo-wrap reveal active">
-            <img src="https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/6cfbffa5-fae2-4a49-b370-d6c8254c7bfa.png" alt="Logo" class="logo-main">
-        </header>
+  <div class="app-container" id="app">
 
-        <main>
-            <section class="hero reveal active">
-                <h1>KHELO INDIA </h1>
-                <p style="color: #666; font-weight: 500;">Start Your Battle Today.</p>
+    <!-- ===== AUTH ===== -->
+    <div class="auth-container active" id="authContainer">
+      <div class="auth-logo">
+        <img src="https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/8ccf3abe-71d3-490d-85a6-6f851a327be2.jpg" alt="Logo" style="width:100%;height:100%;object-fit:cover;border-radius:24px;">
+      </div>
+      <h1>SOCIAL<span>SPIN</span></h1>
+      <p class="subtitle">Connect with your community</p>
+      <div id="authError" class="auth-error"></div>
 
-                <!-- Phone -->
-                <div class="phone-case reveal" id="phoneMockup">
-                    <div class="slider-wrap" id="slider">
-                        <img src="https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/65639057-af19-49ff-80d6-d9891f99a1a6.png">
-                        <img src="https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/e0acc6c5-6e21-4571-831f-60990e19330d.png">
-                        <img src="https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/95c560da-4317-4611-81aa-0499275bb71b.jpg">
-                        <img src="https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/c63c4791-7c13-4e8d-9fa5-ba108d6ace33.png">
-                    </div>
-                </div>a
+      <div id="loginForm">
+        <input type="email" id="loginEmail" class="auth-input" placeholder="Email address">
+        <input type="password" id="loginPassword" class="auth-input" placeholder="Password">
+        <button class="auth-btn auth-btn-primary" id="loginBtn">Sign In</button>
+        <div class="auth-switch">Don't have an account? <span id="switchToSignup">Sign Up</span></div>
+      </div>
 
-                <!-- Buttons with Shimmer -->
-                <div class="btn-box">
-                    <a href="https://github.com/debubhaibhai48-afk/Download/raw/refs/heads/main/KHELO%20GAME_1.0.apk" class="btn-premium btn-dl shimmer-btn">
-                        <i class="bi bi-cloud-arrow-down-fill"></i> Download APK
-                    </a>
-                    <a href="https://whatsapp.com/channel/0029VbCJ8fEHQbS4iDb7aX0i" class="btn-premium btn-site shimmer-btn">
-                        <i class="bi bi-globe2"></i> Official Website
-                    </a>
-                    <!-- Dynamic Developer Button -->
-                    <a href="https://t.me/debulive" class="btn-premium btn-dev shimmer-btn" id="dynamicDevBtn">
-                        <i class="bi bi-telegram"></i> <span>Contact Developer</span>
-                    </a>
-                </div>
-            </section>
-
-            <!-- Bento Stats -->
-            <div class="stats-bento">
-                <div class="stat-card stat-dl reveal" style="grid-column: span 2;">
-                    <i class="bi bi-download" style="color: var(--primary);"></i>
-                    <h2 class="counter" data-target="9858">0</h2>
-                    <p>Total Community Downloads</p>
-                </div>
-                <div class="stat-card stat-user reveal">
-                    <i class="bi bi-people" style="color: var(--secondary);"></i>
-                    <h2 class="counter" data-target="8613">0</h2>
-                    <p>Active Players</p>
-                </div>
-                <div class="stat-card stat-likes reveal">
-                    <i class="bi bi-heart" style="color: var(--success);"></i>
-                    <h2 class="counter" data-target="7532">0</h2>
-                    <p>Trust Likes</p>
-                </div>
-            </div>
-
-            <!-- Features -->
-            <section class="reveal">
-                <h3 style="margin: 0 25px 25px; color: var(--primary); letter-spacing: 1px; font-weight: 800;">CORE FEATURES</h3>
-                <div class="features-grid">
-                    <div class="feat-card" onclick="showDetail('Anti-Cheat', 'Advanced military-grade shield to block all types of hacks and ensures 100% fair play.')">
-                        <i class="bi bi-shield-check"></i>
-                        <h4>ANTI-CHEAT</h4>
-                    </div>
-                    <div class="feat-card" onclick="showDetail('Fast Payout', 'Withdraw your tournament winnings instantly to your UPI. 5-minute processing time.')">
-                        <i class="bi bi-lightning-charge"></i>
-                        <h4>FAST PAYOUT</h4>
-                    </div>
-                    <div class="feat-card" onclick="showDetail('24/7 Support', 'Dedicated support team ready to help you on Telegram and App chat at any time.')">
-                        <i class="bi bi-headset"></i>
-                        <h4>24/7 SUPPORT</h4>
-                    </div>
-                    <div class="feat-card" onclick="showDetail('Refer & Earn', 'Invite your squad and earn real cash rewards for every friend who joins the arena!')">
-                        <i class="bi bi-gift"></i>
-                        <h4>REFER & EARN</h4>
-                    </div>
-                    <div class="feat-card" onclick="showDetail('Leaderboard', 'Rise through the ranks and prove you are the king of the arena. Live tracking available.')">
-                        <i class="bi bi-trophy"></i>
-                        <h4>LEADERBOARD</h4>
-                    </div>
-                    <div class="feat-card" onclick="showDetail('Free Entry', 'Daily practice matches with zero entry fee. Show your skills for free!')">
-                        <i class="bi bi-controller"></i>
-                        <h4>FREE ENTRY</h4>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Feature Details Popup -->
-        <div id="featureModal">
-            <div class="modal-content">
-                <h3 id="modalTitle">Feature Name</h3>
-                <p id="modalDesc">Explanation goes here...</p>
-                <button class="close-btn" onclick="closeDetail()">CLOSE</button>
-            </div>
-        </div>
-
-        <footer>
-            <span class="motivation-text">Download app and enjoy the adventure</span>
-            <span class="footer-copy">DESIGNED BY DEBU LIVE| &copy; 2025</span>
-        </footer>
+      <div id="signupForm" style="display:none;">
+        <input type="text" id="signupName" class="auth-input" placeholder="Your name">
+        <input type="email" id="signupEmail" class="auth-input" placeholder="Email address">
+        <input type="password" id="signupPassword" class="auth-input" placeholder="Password (6+ characters)">
+        <button class="auth-btn auth-btn-primary" id="signupBtn">Create Account</button>
+        <div class="auth-switch">Already have an account? <span id="switchToLogin">Sign In</span></div>
+      </div>
     </div>
 
-    <script>
-        // Modal Logic
-        function showDetail(title, desc) {
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalDesc').innerText = desc;
-            document.getElementById('featureModal').style.display = 'flex';
+    <!-- ===== APP ===== -->
+    <div class="app-content" id="appContent">
+
+      <!-- ===== MAIN ===== -->
+      <div class="main-content" id="mainContent">
+
+        <!-- ===== HOME ===== -->
+        <div id="pageHome" class="page-container active">
+          <div class="home-header">
+            <div>
+              <div class="greeting" id="greetingText">Good Morning!</div>
+              <h2 id="homeUserName">My Name</h2>
+            </div>
+            <div class="coin-badge" id="homeCoinBadge">🪙 <span id="homeCoins">0</span></div>
+          </div>
+          <div class="stories-row" id="storiesRow">
+            <div class="story-item add-story" id="addStoryBtn">
+              <div class="story-ring"><div class="story-avatar">+</div></div>
+              <span class="story-name">Post</span>
+            </div>
+          </div>
+          <div id="postFeed"></div>
+        </div>
+
+        <!-- ===== SEARCH ===== -->
+        <div id="pageSearch" class="page-container">
+          <div class="search-page-header">
+            <button class="back-btn" id="searchBackBtn">←</button>
+            <div class="search-input-wrap">
+              <i class="material-icons" style="color:var(--gray);">search</i>
+              <input type="text" id="searchPageInput" placeholder="Search users..." autofocus>
+              <span class="clear-btn" id="searchClearBtn">✕</span>
+            </div>
+          </div>
+          <div id="searchResultsContainer">
+            <div class="empty-state"><div class="icon">🔍</div><div class="title">Search Users</div><div class="sub">Type above to find users</div></div>
+          </div>
+        </div>
+
+        <!-- ===== SPIN ===== -->
+        <div id="pageSpin" class="page-container">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h2 style="font-size:20px;font-weight:800;color:var(--dark);">🎡 Spin & Win</h2>
+            <button id="promoPageBtn" style="padding:8px 20px;background:linear-gradient(135deg,#FFD700,#F0A500);color:var(--dark);border:none;border-radius:30px;font-weight:700;font-size:13px;cursor:pointer;touch-action:manipulation;box-shadow:0 4px 15px rgba(255,215,0,0.3);">🎁 Promo Codes</button>
+          </div>
+
+          <!-- ===== ADMIN SPIN CONTROL PANEL ===== -->
+          <div class="admin-spin-panel" id="adminSpinPanel" style="display:none;">
+            <div class="admin-title">👑 Admin Spin Control</div>
+            <div class="admin-desc">Give/Remove spin balance to users.</div>
+            <div class="admin-user-list" id="adminUserList"></div>
+          </div>
+
+          <div class="spin-container">
+            <div style="position:relative;z-index:2;">
+              <div style="position:relative;width:100%;max-width:340px;margin:0 auto;padding:10px 0;">
+                <div class="new-wheel-pointer"></div>
+                <div class="new-outer-rim">
+                  <div class="new-lights-container" id="newLightsContainer"></div>
+                  <svg id="newWheel" class="new-wheel-svg" viewBox="0 0 400 400">
+                    <circle cx="200" cy="200" r="196" fill="none" stroke="#ffd700" stroke-width="3" />
+                    <g id="newSlices">
+                      <path d="M200,200 L200,4 A196,196 0 0,1 298,26.5 Z" fill="#3498db"/>
+                      <text x="210" y="65" fill="#ffffff" transform="rotate(15, 200, 200)">10🪙</text>
+                      <path d="M200,200 L298,26.5 A196,196 0 0,1 370.5,98.5 Z" fill="#ffffff"/>
+                      <text x="205" y="65" fill="#104fe6" transform="rotate(45, 200, 200)" font-size="11">ZERO</text>
+                      <path d="M200,200 L370.5,98.5 A196,196 0 0,1 396,200 Z" fill="#2980b9"/>
+                      <text x="215" y="65" fill="#ffffff" transform="rotate(75, 200, 200)">2🪙</text>
+                      <path d="M200,200 L396,200 A196,196 0 0,1 370.5,298 Z" fill="#ffffff"/>
+                      <text x="210" y="65" fill="#104fe6" transform="rotate(105, 200, 200)">50🪙</text>
+                      <path d="M200,200 L370.5,298 A196,196 0 0,1 298,370.5 Z" fill="#3498db"/>
+                      <text x="215" y="65" fill="#ffffff" transform="rotate(135, 200, 200)">1🪙</text>
+                      <path d="M200,200 L298,370.5 A196,196 0 0,1 200,396 Z" fill="#ffffff"/>
+                      <text x="215" y="65" fill="#104fe6" transform="rotate(165, 200, 200)">5🪙</text>
+                      <path d="M200,200 L200,396 A196,196 0 0,1 102,370.5 Z" fill="#8e44ad"/>
+                      <text x="210" y="65" fill="#ffffff" transform="rotate(195, 200, 200)">20🪙</text>
+                      <path d="M200,200 L102,370.5 A196,196 0 0,1 29.5,298 Z" fill="#e91e63"/>
+                      <text x="195" y="70" fill="#ffffff" transform="rotate(225, 200, 200)" font-size="10">JACKPOT</text>
+                      <path d="M200,200 L29.5,298 A196,196 0 0,1 4,200 Z" fill="#ffffff"/>
+                      <text x="215" y="65" fill="#e91e63" transform="rotate(255, 200, 200)">15🪙</text>
+                      <path d="M200,200 L4,200 A196,196 0 0,1 29.5,102 Z" fill="#9b59b6"/>
+                      <text x="210" y="75" fill="#ffffff" transform="rotate(285, 200, 200)">100🪙</text>
+                      <path d="M200,200 L29.5,102 A196,196 0 0,1 102,26.5 Z" fill="#ffffff"/>
+                      <text x="215" y="65" fill="#104fe6" transform="rotate(315, 200, 200)">1🪙</text>
+                      <path d="M200,200 L102,26.5 A196,196 0 0,1 200,4 Z" fill="#2980b9"/>
+                      <text x="215" y="65" fill="#ffffff" transform="rotate(345, 200, 200)">5🪙</text>
+                    </g>
+                    <circle cx="200" cy="200" r="14" fill="#104fe6" stroke="#ffffff" stroke-width="3" />
+                  </svg>
+                </div>
+                <button class="new-spin-btn" id="newSpinBtn">SPIN</button>
+              </div>
+
+              <!-- ===== SPIN BALANCE DISPLAY ===== -->
+              <div class="spin-balance-box" id="spinBalanceBox">
+                <span class="spin-icon">🎯</span>
+                <span class="spin-label">Spin Balance:</span>
+                <span class="spin-count" id="spinBalanceCount">0</span>
+              </div>
+
+              <div class="coin-display">
+                <span class="coin-icon">🪙</span>
+                <span id="spinCoins" style="font-size:24px;font-weight:700;color:white;">0</span>
+                <span class="coin-label">Coins</span>
+              </div>
+              <div style="font-size:13px;opacity:0.7;color:white;" id="spinStatus">Spin once per day • Win up to 100 coins!</div>
+            </div>
+          </div>
+          <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);">
+            <div style="font-weight:700;font-size:16px;margin-bottom:10px;">🎁 Promo Code</div>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="promoInput" placeholder="Enter promo code" style="flex:1;padding:10px 16px;border:2px solid var(--light-gray);border-radius:var(--radius-sm);outline:none;font-size:14px;transition:0.3s;">
+              <button id="claimPromoBtn" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;transition:0.2s;touch-action:manipulation;">Claim</button>
+            </div>
+          </div>
+          <div style="background:var(--white);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-top:12px;">
+            <div style="font-weight:700;font-size:16px;margin-bottom:10px;">💎 Redeem Offers</div>
+            <div id="redeemOffersList"><div class="empty-state"><div class="icon">🎁</div><div class="sub">No offers available</div></div></div>
+          </div>
+        </div>
+
+        <!-- ===== WITHDRAW ===== -->
+        <div id="pageWithdraw" class="page-container">
+          <h2 style="font-size:20px;font-weight:800;color:var(--dark);margin-bottom:16px;">💳 Withdraw</h2>
+          <div class="withdraw-card">
+            <div class="label">Your Total Coins</div>
+            <div class="amount" id="withdrawBalance">🪙 0</div>
+            <div class="sub">1000 coins = ₹10</div>
+          </div>
+          <div class="withdraw-box">
+            <div class="withdraw-logo"><img src="https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/d4d450e6-1a33-41bc-b895-4865831736bb.jpg" alt="Withdraw" style="width:100%;border-radius:12px;"></div>
+            <div style="font-weight:700;font-size:16px;color:var(--dark);margin-bottom:12px;">💰 Select Amount</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px;">
+              <button class="amount-btn" data-coins="1000" data-amount="₹10" onclick="selectAmount(this)">₹10<br><span style="font-size:10px;color:var(--gray);">1000 coins</span></button>
+              <button class="amount-btn" data-coins="2000" data-amount="₹20" onclick="selectAmount(this)">₹20<br><span style="font-size:10px;color:var(--gray);">2000 coins</span></button>
+              <button class="amount-btn" data-coins="5000" data-amount="₹50" onclick="selectAmount(this)">₹50<br><span style="font-size:10px;color:var(--gray);">5000 coins</span></button>
+              <button class="amount-btn" data-coins="10000" data-amount="₹100" onclick="selectAmount(this)">₹100<br><span style="font-size:10px;color:var(--gray);">10000 coins</span></button>
+              <button class="amount-btn" data-coins="20000" data-amount="₹200" onclick="selectAmount(this)">₹200<br><span style="font-size:10px;color:var(--gray);">20000 coins</span></button>
+              <button class="amount-btn" data-coins="50000" data-amount="₹500" onclick="selectAmount(this)">₹500<br><span style="font-size:10px;color:var(--gray);">50000 coins</span></button>
+            </div>
+            <div style="background:var(--primary-light);padding:12px;border-radius:var(--radius-sm);margin-bottom:12px;text-align:center;">
+              <span style="font-size:13px;color:var(--gray);">Selected Amount:</span>
+              <span id="selectedAmountDisplay" style="font-weight:700;font-size:18px;color:var(--primary);margin-left:8px;">None</span>
+            </div>
+            <button class="withdraw-btn" id="withdrawBtn" style="width:100%;padding:14px;background:linear-gradient(135deg,#FFD700,#F0A500);color:var(--dark);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:16px;cursor:pointer;transition:0.2s;touch-action:manipulation;opacity:0.5;" disabled>💳 Withdraw Now</button>
+            <div class="note" style="font-size:11px;color:var(--gray);margin-top:8px;text-align:center;">Select an amount above • 1000 coins = ₹10</div>
+          </div>
+          <button class="history-btn" id="viewHistoryBtn">📜 View History</button>
+          <button class="history-btn" id="viewCoinHistoryBtn" style="margin-top:8px;border-color:var(--success);color:var(--success);">🪙 Coin History</button>
+        </div>
+
+        <!-- ===== WITHDRAW HISTORY ===== -->
+        <div id="pageWithdrawHistory" class="page-container">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <button class="back-btn" id="backFromHistory" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--dark);touch-action:manipulation;">←</button>
+            <h2 style="font-size:20px;font-weight:800;color:var(--dark);">📜 Withdraw History</h2>
+          </div>
+          <div id="withdrawHistoryFull"><div class="empty-state"><div class="icon">📭</div><div class="sub">No history found</div></div></div>
+        </div>
+
+        <!-- ===== MESSAGE ===== -->
+        <div id="pageMessage" class="page-container">
+          <h2 style="font-size:20px;font-weight:800;color:var(--dark);margin-bottom:16px;">💬 Messages</h2>
+          <div id="messageUserList"><div class="empty-state"><div class="icon">💬</div><div class="title">No one online</div><div class="sub">Your friends will appear when online</div></div></div>
+        </div>
+
+        <!-- ===== CHAT ===== -->
+        <div id="pageMessageChat" class="page-container">
+          <div class="chat-header">
+            <button class="back-btn" id="backFromChat">←</button>
+            <div class="chat-user-info">
+              <div class="chat-user-avatar"><img id="chatUserAvatar" src=""></div>
+              <div class="chat-user-details">
+                <div class="name" id="chatUserName">User</div>
+                <div class="status-text" id="chatUserStatusText">Offline</div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-container">
+            <div class="chat-messages" id="chatMessages"><div class="empty-state"><div class="icon">💬</div><div class="sub">No messages yet</div></div></div>
+            <div id="typingIndicator" style="display:none;font-size:12px;color:var(--gray);padding:4px 0;"><span class="typing-dots"><span></span><span></span><span></span></span> Typing...</div>
+            <div class="chat-input-wrap">
+              <input type="text" id="chatInput" placeholder="Type a message...">
+              <button class="send-btn" id="sendChatBtn">Send</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== PROFILE ===== -->
+        <div id="pageProfile" class="page-container">
+          <h2 style="font-size:20px;font-weight:800;color:var(--dark);margin-bottom:16px;">👤 Profile</h2>
+          <div class="profile-header">
+            <div class="cover"></div>
+            <div class="profile-avatar-wrap">
+              <div class="profile-avatar" id="profileAvatar"><img id="profileAvatarImg" src="" style="display:none;"></div>
+              <button id="photoUploadBtn" style="position:absolute;bottom:0;right:0;width:30px;height:30px;border-radius:50%;border:3px solid white;background:var(--primary);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:var(--shadow);touch-action:manipulation;"><i class="material-icons" style="font-size:14px;">camera_alt</i></button>
+              <input type="file" id="photoInput" accept="image/*" style="display:none;">
+            </div>
+            <div class="profile-name" id="profileNameDisplay">My Name</div>
+            <div class="profile-handle" id="profileUsername">@username</div>
+            <div class="profile-stats">
+              <div class="stat"><div class="number" id="postCount">0</div><div class="label">Posts</div></div>
+              <div class="stat"><div class="number" id="followerCount">0</div><div class="label">Followers</div></div>
+              <div class="stat"><div class="number" id="followingCount">0</div><div class="label">Following</div></div>
+            </div>
+          </div>
+          <div style="font-weight:700;font-size:16px;color:var(--dark);margin:12px 0 8px;">📝 My Posts</div>
+          <div id="myPostsList"></div>
+        </div>
+
+        <!-- ===== PROMO PAGE ===== -->
+        <div id="pagePromo" class="page-container">
+          <div class="promo-header">
+            <button class="back-btn" id="promoBackBtn">←</button>
+            <h2>🎁 Promo Videos</h2>
+            <div class="coin-badge-small">🪙 <span id="promoCoins">0</span></div>
+          </div>
+          <div style="background:linear-gradient(135deg, var(--primary), var(--primary-dark));border-radius:var(--radius);padding:20px;color:white;margin-bottom:16px;">
+            <div style="font-size:14px;opacity:0.8;">💡 Watch videos and get promo codes</div>
+            <div style="font-size:24px;font-weight:800;margin-top:4px;">Earn Coins</div>
+            <div style="font-size:13px;opacity:0.8;margin-top:2px;">Watch videos from admin and get promo codes!</div>
+          </div>
+          <div id="promoVideosList"><div class="empty-state"><div class="icon">📹</div><div class="title">No videos yet</div><div class="sub">Admin will post promo videos here</div></div></div>
+        </div>
+
+        <!-- ===== USER PROFILE ===== -->
+        <div id="pageUserProfile" class="page-container">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <button class="back-btn" id="backFromUserProfile" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--dark);touch-action:manipulation;">←</button>
+            <h2 style="font-size:20px;font-weight:800;color:var(--dark);">👤 Profile</h2>
+          </div>
+          <div id="userProfileContent"></div>
+        </div>
+
+      </div>
+
+      <!-- ===== SETTINGS BUTTON ===== -->
+      <button class="settings-btn" id="settingsBtn"><i class="material-icons">settings</i></button>
+
+      <!-- ===== SETTINGS MODAL ===== -->
+      <div class="settings-modal" id="settingsModal">
+        <div class="settings-sheet">
+          <div class="handle"></div>
+          <h3>⚙️ Settings</h3>
+          <button class="setting-item" id="editProfileSetting"><span class="icon"><i class="material-icons">edit</i></span>Edit Profile</button>
+          <button class="setting-item" id="logoutSetting"><span class="icon"><i class="material-icons">logout</i></span>Logout</button>
+          <button class="setting-item danger" id="closeSettings"><span class="icon"><i class="material-icons">close</i></span>Close</button>
+        </div>
+      </div>
+
+      <!-- ===== EDIT PROFILE MODAL ===== -->
+      <div class="settings-modal" id="editProfileModal">
+        <div class="settings-sheet">
+          <div class="handle"></div>
+          <h3>✏️ Edit Profile</h3>
+          <div style="margin-bottom:12px;"><label style="font-weight:600;font-size:14px;color:var(--dark);">Display Name</label><input type="text" id="editUsernameInput" style="width:100%;padding:10px 14px;border:2px solid var(--light-gray);border-radius:var(--radius-sm);outline:none;font-size:14px;margin-top:4px;transition:0.3s;"></div>
+          <div style="margin-bottom:12px;"><label style="font-weight:600;font-size:14px;color:var(--dark);">Username</label><input type="text" id="editHandleInput" style="width:100%;padding:10px 14px;border:2px solid var(--light-gray);border-radius:var(--radius-sm);outline:none;font-size:14px;margin-top:4px;transition:0.3s;"></div>
+          <div style="margin-bottom:16px;"><label style="font-weight:600;font-size:14px;color:var(--dark);">Bio</label><input type="text" id="editBioInput" placeholder="Write something about yourself..." style="width:100%;padding:10px 14px;border:2px solid var(--light-gray);border-radius:var(--radius-sm);outline:none;font-size:14px;margin-top:4px;transition:0.3s;"></div>
+          <button id="saveProfileBtn" style="width:100%;padding:12px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-weight:700;font-size:16px;cursor:pointer;transition:0.2s;touch-action:manipulation;">💾 Save Changes</button>
+          <button id="closeEditProfile" style="width:100%;padding:12px;background:var(--light-gray);color:var(--dark);border:none;border-radius:var(--radius-sm);font-weight:600;font-size:14px;cursor:pointer;transition:0.2s;margin-top:8px;touch-action:manipulation;">Close</button>
+        </div>
+      </div>
+
+      <!-- ===== CREATE POST MODAL ===== -->
+      <div class="create-post-modal" id="createPostModal">
+        <div class="post-sheet">
+          <div class="handle"></div>
+          <h3>📝 New Post</h3>
+          <textarea id="postInput" placeholder="What's on your mind?..."></textarea>
+          <input type="text" id="postImageUrlInput" class="url-input" placeholder="Paste image URL (optional)">
+          <img id="postPhotoPreview" class="photo-preview" src="">
+          <div class="btn-row">
+            <button class="photo-btn" id="postPreviewBtn">👁️ Preview Image</button>
+            <button class="remove-btn" id="postRemovePhotoBtn" style="display:none;">✕ Remove Image</button>
+          </div>
+          <button class="submit-btn" id="submitPostBtn">📤 Post Now</button>
+        </div>
+      </div>
+
+      <!-- ===== COIN HISTORY MODAL ===== -->
+      <div class="coin-history-modal" id="coinHistoryModal">
+        <div class="history-sheet">
+          <div class="handle"></div>
+          <div class="header">
+            <h3>🪙 Coin History</h3>
+            <button class="close-btn" id="closeCoinHistory">✕</button>
+          </div>
+          <div id="coinHistoryList">
+            <div class="empty-state"><div class="icon">📭</div><div class="sub">No coin history yet</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== BOTTOM NAV ===== -->
+      <div class="bottom-nav">
+        <button class="nav-item active" data-page="pageHome"><i class="material-icons">home</i><span class="nav-label">Home</span></button>
+        <button class="nav-item" data-page="pageSearch"><i class="material-icons">search</i><span class="nav-label">Search</span></button>
+        <button class="nav-item" data-page="pageSpin"><i class="material-icons">casino</i><span class="nav-label">Spin</span></button>
+        <button class="nav-item" data-page="pageWithdraw"><i class="material-icons">payments</i><span class="nav-label">Withdraw</span></button>
+        <button class="nav-item" data-page="pageMessage"><i class="material-icons">chat</i><span class="nav-label">Messages</span></button>
+        <button class="nav-item" data-page="pageProfile"><i class="material-icons">person</i><span class="nav-label">Profile</span></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===== UPDATE DIALOG - FULL SCREEN ===== -->
+  <div class="update-overlay" id="updateOverlay">
+    <div class="update-dialog-full">
+      <div class="update-badge">📢 NEW UPDATE</div>
+      <div class="update-title" id="updateTitle">App Update Available!</div>
+      <div class="update-subtitle" id="updateSubtitle">New features and improvements</div>
+
+      <div class="update-slider-container-full">
+        <div class="update-slider-track" id="sliderTrack">
+          <!-- Slides will be added dynamically -->
+        </div>
+      </div>
+      <div class="slider-dots" id="sliderDots"></div>
+
+      <div class="screenshot-size-info" id="screenshotSizeInfo">📱 Screenshot Size: 1080 x 1920 px</div>
+
+      <div class="update-progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <div class="update-timer" id="updateTimer">
+        <div class="timer-label">⏳ Update Available In</div>
+        <div class="timer-display" id="timerDisplay">
+          <div class="time-block" id="daysBlock">
+            <span class="number" id="days">00</span>
+            <span class="label">Days</span>
+          </div>
+          <span class="colon" id="colon1">:</span>
+          <div class="time-block">
+            <span class="number" id="hours">00</span>
+            <span class="label">Hours</span>
+          </div>
+          <span class="colon">:</span>
+          <div class="time-block">
+            <span class="number" id="minutes">00</span>
+            <span class="label">Mins</span>
+          </div>
+          <span class="colon">:</span>
+          <div class="time-block">
+            <span class="number" id="seconds">00</span>
+            <span class="label">Secs</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="update-action-btn primary" id="updateActionBtn" disabled>
+        <span class="btn-icon">📥</span> Update Now
+      </button>
+
+      <a class="update-help-link" id="updateHelpLink" href="#" target="_blank">❓ Need help?</a>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast"></div>
+
+  <script>
+    // =============================================
+    // FIREBASE CONFIG
+    // =============================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyAEAVEiMO6fdhWVzMAqNbjuyopxU0kyvQg",
+      authDomain: "social-81f36.firebaseapp.com",
+      databaseURL: "https://social-81f36-default-rtdb.firebaseio.com",
+      projectId: "social-81f36",
+      storageBucket: "social-81f36.firebasestorage.app",
+      messagingSenderId: "667117282136",
+      appId: "1:667117282136:web:ddccce20c4e87f385cbb2d",
+      measurementId: "G-BF4T9Z8HTY"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.database();
+    const storage = firebase.storage();
+
+    // =============================================
+    // CONSTANTS
+    // =============================================
+    const DEFAULT_AVATAR = "https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/1fd6f87b-46b2-4bf3-82ac-ece080ef351c.jpg";
+    const WITHDRAW_LOGO = "https://i.supaimg.com/2216f73b-0da1-496c-a7c6-507dc097eab0/d4d450e6-1a33-41bc-b895-4865831736bb.jpg";
+    const ADMIN_UID = "JqvQd5KO1OVrBOS6m5j5twjFWG72";
+
+    // =============================================
+    // STATE
+    // =============================================
+    let currentUser = null;
+    let currentUserData = null;
+    let onlineUsers = {};
+    let selectedChatUser = null;
+    let postImageUrl = '';
+    let followingList = {};
+    let selectedWithdrawData = null;
+    let isNewSpinning = false;
+    let chatMessageListeners = {};
+    let claimedPromoCodes = {};
+    let updateData = null;
+    let updateTimerInterval = null;
+    let allUsersData = {};
+
+    // =============================================
+    // TOAST
+    // =============================================
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.display = 'block';
+      toast.style.background = type === 'success' ? '#2ED573' : type === 'error' ? '#FF4757' : '#FFA502';
+      toast.style.color = type === 'warning' ? '#1a1a2e' : 'white';
+      clearTimeout(toast._timeout);
+      toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    // =============================================
+    // COIN HISTORY FUNCTIONS
+    // =============================================
+    function addCoinHistory(userId, type, amount, description, icon) {
+      const historyRef = db.ref('coinHistory/' + userId);
+      historyRef.push({
+        type: type,
+        amount: amount,
+        description: description,
+        icon: icon || '🪙',
+        timestamp: Date.now(),
+        time: new Date().toLocaleString()
+      });
+    }
+
+    function loadCoinHistory() {
+      if (!currentUser) return;
+      db.ref('coinHistory/' + currentUser.uid).orderByChild('timestamp').limitToLast(100).on('value', (snapshot) => {
+        const container = document.getElementById('coinHistoryList');
+        let html = '';
+        let hasData = false;
+
+        const items = [];
+        snapshot.forEach(child => {
+          items.push({ id: child.key, ...child.val() });
+        });
+
+        items.reverse().forEach(item => {
+          hasData = true;
+          const amountClass = item.amount >= 0 ? 'plus' : 'minus';
+          const sign = item.amount >= 0 ? '+' : '';
+          const iconMap = {
+            'spin': '🎡',
+            'promo': '🎁',
+            'redeem': '💎',
+            'withdraw': '💳',
+            'admin_give': '👑'
+          };
+          const icon = item.icon || iconMap[item.type] || '🪙';
+          const typeLabels = {
+            'spin': 'Spin Win',
+            'promo': 'Promo Code',
+            'redeem': 'Redeem Offer',
+            'withdraw': 'Withdraw',
+            'admin_give': 'Admin Gift'
+          };
+
+          html += `
+              <div class="history-item">
+                <div class="h-icon">${icon}</div>
+                <div class="h-details">
+                  <div class="h-title">${typeLabels[item.type] || item.type || 'Coin Update'}</div>
+                  <div class="h-desc">${item.description || ''}</div>
+                  <div class="h-time">${item.time || ''}</div>
+                </div>
+                <div class="h-amount ${amountClass}">${sign}${item.amount}</div>
+              </div>
+            `;
+        });
+
+        container.innerHTML = hasData ? html : `
+            <div class="empty-state">
+              <div class="icon">📭</div>
+              <div class="title">No Coin History</div>
+              <div class="sub">Start earning coins by spinning or using promo codes!</div>
+            </div>
+          `;
+      });
+    }
+
+    // =============================================
+    // ADMIN SPIN CONTROL
+    // =============================================
+    function loadAdminSpinPanel() {
+      if (!currentUser || currentUser.uid !== ADMIN_UID) {
+        document.getElementById('adminSpinPanel').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('adminSpinPanel').style.display = 'block';
+
+      db.ref('users').on('value', (snapshot) => {
+        const container = document.getElementById('adminUserList');
+        let html = '';
+
+        snapshot.forEach(child => {
+          const user = child.val();
+          if (child.key !== currentUser.uid) {
+            const spinCount = user.spinCount || 0;
+            const hasSpin = spinCount > 0;
+            const avatarUrl = user.avatarUrl || DEFAULT_AVATAR;
+            html += `
+                <div class="admin-user-item" data-uid="${child.key}">
+                  <div style="display:flex;align-items:center;gap:8px;">
+                    <img src="${avatarUrl}" style="width:28px;height:28px;border-radius:50%;object-fit:cover;">
+                    <div>
+                      <div class="user-name">${user.username || 'User'}</div>
+                      <div class="user-coins">🪙 ${user.coins || 0} coins | 🎯 ${spinCount} spins</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;align-items:center;gap:6px;">
+                    <span style="font-size:10px;opacity:0.6;">${hasSpin ? '✅ Has Spin' : '⛔ No Spin (0)'}</span>
+                    <button class="give-spin-btn" data-uid="${child.key}" data-action="${hasSpin ? 'remove' : 'give'}">
+                      ${hasSpin ? 'Remove' : 'Give Spin'}
+                    </button>
+                  </div>
+                </div>
+              `;
+          }
+        });
+
+        container.innerHTML = html || '<div style="color:rgba(255,255,255,0.5);text-align:center;padding:10px;">No users found</div>';
+      });
+    }
+
+    // =============================================
+    // UPDATE SYSTEM
+    // =============================================
+    function loadUpdateData() {
+      db.ref('appUpdates').orderByChild('createdAt').limitToLast(1).on('value', (snapshot) => {
+        let hasUpdate = false;
+        snapshot.forEach(child => {
+          const data = child.val();
+          if (data.isActive !== false) {
+            hasUpdate = true;
+            updateData = { id: child.key, ...data };
+            showUpdateDialog(updateData);
+          }
+        });
+        if (!hasUpdate) {
+          document.getElementById('updateOverlay').classList.remove('show');
         }
-        function closeDetail() {
-            document.getElementById('featureModal').style.display = 'none';
+      });
+    }
+
+    function showUpdateDialog(data) {
+      const overlay = document.getElementById('updateOverlay');
+      overlay.classList.add('show');
+
+      document.getElementById('updateTitle').textContent = data.title || 'App Update Available!';
+      document.getElementById('updateSubtitle').textContent = data.subtitle || 'New features and improvements';
+
+      const track = document.getElementById('sliderTrack');
+      const dots = document.getElementById('sliderDots');
+      track.innerHTML = '';
+      dots.innerHTML = '';
+
+      let screenshotSize = '1080 x 1920 px';
+
+      if (data.screenshots && data.screenshots.length > 0) {
+        data.screenshots.forEach((img, index) => {
+          const slide = document.createElement('div');
+          slide.className = 'update-slide';
+          slide.innerHTML = `<img src="${img}" alt="Screenshot ${index + 1}" loading="lazy">`;
+          track.appendChild(slide);
+
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (index === 0 ? ' active' : '');
+          dot.dataset.index = index;
+          dots.appendChild(dot);
+
+          if (index === 0) {
+            const tempImg = new Image();
+            tempImg.onload = function() {
+              screenshotSize = this.width + ' x ' + this.height + ' px';
+              document.getElementById('screenshotSizeInfo').textContent = '📱 Screenshot Size: ' + screenshotSize;
+            };
+            tempImg.src = img;
+          }
+        });
+      } else {
+        const defaultImages = [
+          'https://via.placeholder.com/1080x1920/6C63FF/FFFFFF?text=New+Update',
+          'https://via.placeholder.com/1080x1920/FFD700/1A1A2E?text=New+Features'
+        ];
+        defaultImages.forEach((img, index) => {
+          const slide = document.createElement('div');
+          slide.className = 'update-slide';
+          slide.innerHTML = `<img src="${img}" alt="Screenshot ${index + 1}" loading="lazy">`;
+          track.appendChild(slide);
+
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (index === 0 ? ' active' : '');
+          dot.dataset.index = index;
+          dots.appendChild(dot);
+        });
+        screenshotSize = '1080 x 1920 px (Default)';
+      }
+
+      document.getElementById('screenshotSizeInfo').textContent = '📱 Screenshot Size: ' + screenshotSize;
+
+      let currentSlide = 0;
+      const totalSlides = document.querySelectorAll('.update-slide').length;
+
+      if (totalSlides > 1) {
+        setInterval(() => {
+          currentSlide = (currentSlide + 1) % totalSlides;
+          track.style.transform = `translateX(-${currentSlide * 100}%)`;
+          document.querySelectorAll('.slider-dots .dot').forEach((dot, i) => {
+            dot.classList.toggle('active', i === currentSlide);
+          });
+        }, 4000);
+      }
+
+      if (data.helpLink) {
+        document.getElementById('updateHelpLink').href = data.helpLink;
+        document.getElementById('updateHelpLink').style.display = 'block';
+      } else {
+        document.getElementById('updateHelpLink').style.display = 'none';
+      }
+
+      const updateBtn = document.getElementById('updateActionBtn');
+      if (data.updateLink) {
+        updateBtn.onclick = function() {
+          window.open(data.updateLink, '_blank');
+        };
+      }
+
+      if (data.targetDate) {
+        startUpdateTimer(data.targetDate);
+      } else {
+        document.getElementById('updateActionBtn').disabled = false;
+        document.getElementById('updateTimer').style.display = 'none';
+      }
+
+      const progress = document.getElementById('progressBar');
+      progress.style.width = '100%';
+    }
+
+    function startUpdateTimer(targetDate) {
+      const timerContainer = document.getElementById('updateTimer');
+      const updateBtn = document.getElementById('updateActionBtn');
+      const progressBar = document.getElementById('progressBar');
+
+      timerContainer.style.display = 'block';
+      updateBtn.disabled = true;
+
+      const target = new Date(targetDate).getTime();
+
+      if (updateTimerInterval) {
+        clearInterval(updateTimerInterval);
+      }
+
+      function updateTimerDisplay() {
+        const now = new Date().getTime();
+        const distance = target - now;
+
+        if (distance <= 0) {
+          clearInterval(updateTimerInterval);
+          timerContainer.style.display = 'none';
+          updateBtn.disabled = false;
+          progressBar.style.width = '100%';
+          updateBtn.innerHTML = '<span class="btn-icon">📥</span> Update Now';
+          updateBtn.classList.add('pulse');
+          return;
         }
 
-        // Slider
-        const slider = document.getElementById('slider');
-        let idx = 0;
-        setInterval(() => {
-            idx = (idx + 1) % 4;
-            slider.style.transform = `translateX(-${idx * 100}%)`;
-        }, 3000);
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // --- Dynamic Developer Button Color & Text Switcher ---
-        const devBtn = document.getElementById('dynamicDevBtn');
-        const devBtnText = devBtn.querySelector('span');
-        const labels = ["Contact Developer", "Want your own app?"];
-        let labelIdx = 0;
-        
-        setInterval(() => {
-            labelIdx = (labelIdx + 1) % labels.length;
-            
-            // Start Fade out
-            devBtnText.style.opacity = 0;
-            
-            setTimeout(() => {
-                // Change Text
-                devBtnText.innerText = labels[labelIdx];
-                
-                // Toggle Color Class
-                if(labelIdx === 1) {
-                    devBtn.classList.add('alt-style');
-                } else {
-                    devBtn.classList.remove('alt-style');
-                }
-                
-                // Fade in
-                devBtnText.style.opacity = 1;
-            }, 300);
-        }, 2500);
+        document.getElementById('days').textContent = String(days).padStart(2, '0');
+        document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
 
-        // Reveal Animation
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('active'); });
-        }, { threshold: 0.1 });
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        const totalSeconds = distance / 1000;
+        const maxSeconds = 7 * 24 * 60 * 60;
+        const progress = Math.min((1 - totalSeconds / maxSeconds) * 100, 100);
+        progressBar.style.width = Math.max(0, progress) + '%';
 
-        // Counting Logic
-        const counterObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const el = entry.target;
-                    const target = +el.getAttribute('data-target');
-                    let current = 0;
-                    const increment = target / 50;
-                    const update = () => {
-                        if (current < target) {
-                            current += increment;
-                            el.innerText = Math.ceil(current);
-                            requestAnimationFrame(update);
-                        } else el.innerText = target;
-                    };
-                    update();
-                    counterObserver.unobserve(el);
-                }
+        const daysBlock = document.getElementById('daysBlock');
+        const colon1 = document.getElementById('colon1');
+        if (days === 0) {
+          daysBlock.style.display = 'none';
+          colon1.style.display = 'none';
+        } else {
+          daysBlock.style.display = 'flex';
+          colon1.style.display = 'block';
+        }
+      }
+
+      updateTimerDisplay();
+      updateTimerInterval = setInterval(updateTimerDisplay, 1000);
+    }
+
+    // =============================================
+    // AUTH STATE
+    // =============================================
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        currentUser = user;
+        document.getElementById('authContainer').classList.remove('active');
+        document.getElementById('appContent').classList.add('active');
+        loadUserData(user.uid);
+        setOnlineStatus(user.uid, true);
+        loadUpdateData();
+
+        db.ref('online').on('value', (snapshot) => {
+          onlineUsers = {};
+          snapshot.forEach(child => { onlineUsers[child.key] = child.val(); });
+          updateOnlineStatus();
+          loadMessageUsers();
+        });
+
+        db.ref('online/' + user.uid).onDisconnect().remove();
+        updateTime();
+        setInterval(updateTime, 1000);
+        loadUserClaimedPromoCodes(user.uid);
+
+        db.ref('users').on('value', (snapshot) => {
+          allUsersData = {};
+          snapshot.forEach(child => {
+            allUsersData[child.key] = child.val();
+          });
+        });
+
+        if (user.uid === ADMIN_UID) {
+          loadAdminSpinPanel();
+          db.ref('users').on('value', () => {
+            loadAdminSpinPanel();
+          });
+        }
+
+        loadCoinHistory();
+
+      } else {
+        document.getElementById('authContainer').classList.add('active');
+        document.getElementById('appContent').classList.remove('active');
+        currentUser = null;
+        currentUserData = null;
+      }
+    });
+
+    // ===== Update spin status =====
+    function updateSpinStatus() {
+      const spinCount = currentUserData?.spinCount || 0;
+      const statusEl = document.getElementById('spinStatus');
+      const spinBtn = document.getElementById('newSpinBtn');
+      const balanceEl = document.getElementById('spinBalanceCount');
+
+      // Spin Balance আপডেট
+      if (balanceEl) {
+        balanceEl.textContent = spinCount;
+        const boxEl = document.getElementById('spinBalanceBox');
+        if (spinCount > 0) {
+          balanceEl.className = 'spin-count';
+          if (boxEl) boxEl.style.borderColor = 'rgba(255,215,0,0.4)';
+        } else {
+          balanceEl.className = 'spin-count zero';
+          if (boxEl) boxEl.style.borderColor = 'rgba(255,71,87,0.4)';
+        }
+      }
+
+      // Spin Button - শুধু spinBalance চেক করে
+      if (spinCount > 0) {
+        statusEl.textContent = '🎯 You have ' + spinCount + ' spin(s)! Spin once per day • Win up to 100 coins!';
+        spinBtn.disabled = false;
+      } else {
+        statusEl.textContent = '⛔ You have no spins. Contact admin to get spins.';
+        spinBtn.disabled = true;
+      }
+    }
+
+    // ===== Admin spin button handler =====
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.give-spin-btn');
+      if (!btn) return;
+
+      const userId = btn.dataset.uid;
+      const action = btn.dataset.action;
+
+      if (!userId) return;
+
+      if (action === 'give') {
+        db.ref('users/' + userId + '/spinCount').transaction((current) => {
+          return (current || 0) + 1;
+        }).then(() => {
+          showToast('✅ 1 spin given to user!', 'success');
+          if (currentUser?.uid === ADMIN_UID) {
+            loadAdminSpinPanel();
+          }
+          loadUsers();
+          if (userId === currentUser?.uid) {
+            updateSpinStatus();
+          }
+        }).catch((err) => {
+          showToast('❌ Error: ' + err.message, 'error');
+        });
+      } else {
+        db.ref('users/' + userId + '/spinCount').set(0).then(() => {
+          showToast('⛔ Spins removed from user (set to 0)', 'warning');
+          if (currentUser?.uid === ADMIN_UID) {
+            loadAdminSpinPanel();
+          }
+          loadUsers();
+          if (userId === currentUser?.uid) {
+            updateSpinStatus();
+          }
+        }).catch((err) => {
+          showToast('❌ Error: ' + err.message, 'error');
+        });
+      }
+    });
+
+    // =============================================
+    // SPIN BUTTON HANDLER
+    // =============================================
+    const newSpinBtn = document.getElementById('newSpinBtn');
+    const newWheel = document.getElementById('newWheel');
+    let newWheelRotation = 0;
+    let newTargetLightSpeed = 0.5;
+
+    if (newSpinBtn) {
+      newSpinBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+
+        if (isNewSpinning) {
+          showToast('⏳ Spin already in progress!', 'warning');
+          return;
+        }
+
+        if (!currentUserData) {
+          showToast('Please login first!', 'error');
+          return;
+        }
+
+        // শুধু spinBalance চেক করে
+        const spinCount = currentUserData.spinCount || 0;
+        if (spinCount <= 0) {
+          showToast('⛔ You have no spins! Contact admin to get spins.', 'error');
+          return;
+        }
+
+        const now = new Date();
+        const today = now.toDateString();
+        const lastSpin = localStorage.getItem('lastSpinDate_' + currentUser.uid);
+
+        if (lastSpin === today) {
+          const hoursLeft = 23 - now.getHours();
+          const minsLeft = 59 - now.getMinutes();
+          let timeMsg = '';
+          if (hoursLeft > 0) {
+            timeMsg = hoursLeft + ' hours and ' + minsLeft + ' minutes';
+          } else {
+            timeMsg = minsLeft + ' minutes';
+          }
+          showToast('⏳ Already spun today! Next spin at midnight (12:00 AM). ' + timeMsg + ' remaining.', 'warning');
+          return;
+        }
+
+        isNewSpinning = true;
+        this.disabled = true;
+
+        newTargetLightSpeed = 15;
+
+        const randomDegree = Math.floor(Math.random() * 360);
+        newWheelRotation += (360 * 8) + randomDegree;
+        newWheel.style.transform = `rotate(${newWheelRotation}deg)`;
+
+        setTimeout(() => {
+          newTargetLightSpeed = 0.5;
+        }, 4500);
+
+        setTimeout(() => {
+          isNewSpinning = false;
+          this.disabled = false;
+
+          const normalized = randomDegree % 360;
+          let earnedCoins = 0;
+          let earnedLabel = '0';
+
+          const segments = [
+            { min: 0, max: 30, coins: 10, label: '10🪙' },
+            { min: 30, max: 60, coins: 0, label: 'ZERO' },
+            { min: 60, max: 90, coins: 2, label: '2🪙' },
+            { min: 90, max: 120, coins: 50, label: '50🪙' },
+            { min: 120, max: 150, coins: 1, label: '1🪙' },
+            { min: 150, max: 180, coins: 5, label: '5🪙' },
+            { min: 180, max: 210, coins: 20, label: '20🪙' },
+            { min: 210, max: 240, coins: 100, label: 'JACKPOT' },
+            { min: 240, max: 270, coins: 15, label: '15🪙' },
+            { min: 270, max: 300, coins: 100, label: '100🪙' },
+            { min: 300, max: 330, coins: 1, label: '1🪙' },
+            { min: 330, max: 360, coins: 5, label: '5🪙' }
+          ];
+
+          for (const seg of segments) {
+            if (normalized >= seg.min && normalized < seg.max) {
+              earnedCoins = seg.coins;
+              earnedLabel = seg.label;
+              break;
+            }
+          }
+
+          currentUserData.spinCount = (currentUserData.spinCount || 1) - 1;
+          currentUserData.coins = (currentUserData.coins || 0) + earnedCoins;
+          localStorage.setItem('lastSpinDate_' + currentUser.uid, today);
+          updateUI();
+          saveUserData();
+
+          addCoinHistory(currentUser.uid, 'spin', earnedCoins, 'Spin win - ' + earnedLabel, '🎡');
+
+          // স্পিন শেষে স্পিন স্ট্যাটাস আপডেট করুন
+          updateSpinStatus();
+
+          showSpinResult(earnedCoins, earnedLabel);
+
+        }, 6000);
+      });
+    }
+
+    function showSpinResult(coins, label) {
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0,0,0,0.7);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          backdrop-filter: blur(10px);
+          animation: fadeInModal 0.5s ease;
+        `;
+
+      const colors = ['#FF6B6B', '#FFD93D', '#6BCB77', '#4D96FF', '#FF9FF3', '#FECA57'];
+
+      modal.innerHTML = `
+          <div style="background:linear-gradient(145deg, #1a1a3e, #2d2d6e);border-radius:30px;padding:40px 30px;max-width:320px;width:90%;text-align:center;color:white;box-shadow:0 20px 60px rgba(0,0,0,0.5);border:1px solid rgba(255,215,0,0.2);animation:slideUp 0.5s ease;">
+            <div style="font-size:60px;margin-bottom:10px;">🎉</div>
+            <div style="font-size:14px;opacity:0.6;">You Won</div>
+            <div style="font-size:48px;font-weight:900;color:#FFD700;text-shadow:0 0 30px rgba(255,215,0,0.3);">${coins}</div>
+            <div style="font-size:18px;margin-bottom:15px;">🪙 Coins</div>
+            <div style="background:rgba(255,255,255,0.08);padding:8px 16px;border-radius:30px;font-size:13px;margin-bottom:20px;display:inline-block;">🎯 Segment: ${label}</div>
+            <button onclick="this.closest('div').parentElement.remove()" style="background:linear-gradient(145deg,#FFD700,#F0A500);color:#1a1a2e;border:none;padding:12px 40px;border-radius:60px;font-weight:700;font-size:16px;cursor:pointer;transition:0.2s;touch-action:manipulation;">Awesome! 🚀</button>
+          </div>
+        `;
+
+      document.body.appendChild(modal);
+
+      for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+          const confetti = document.createElement('div');
+          confetti.style.cssText = `
+              position: fixed;
+              width: ${6 + Math.random() * 8}px;
+              height: ${6 + Math.random() * 8}px;
+              background: ${colors[Math.floor(Math.random() * colors.length)]};
+              border-radius: ${Math.random() > 0.5 ? '50%' : '2px'};
+              left: ${Math.random() * 100}%;
+              top: -10px;
+              animation: confettiFall ${2 + Math.random() * 2}s linear forwards;
+              z-index: 99999;
+              transform: rotate(${Math.random() * 360}deg);
+            `;
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 4000);
+        }, i * 50);
+      }
+    }
+
+    function updateTime() {
+      const now = new Date();
+      const h = now.getHours();
+      let greeting = 'Good Night';
+      if (h < 12) greeting = 'Good Morning';
+      else if (h < 17) greeting = 'Good Afternoon';
+      else if (h < 20) greeting = 'Good Evening';
+      document.getElementById('greetingText').textContent = greeting;
+    }
+
+    function setOnlineStatus(uid, isOnline) {
+      if (isOnline) {
+        db.ref('online/' + uid).set({ online: true, lastSeen: Date.now() });
+      } else {
+        db.ref('online/' + uid).remove();
+      }
+    }
+
+    function updateOnlineStatus() {
+      document.querySelectorAll('.msg-row').forEach(item => {
+        const uid = item.dataset.uid;
+        const statusEl = item.querySelector('.status');
+        const dotEl = item.querySelector('.online-dot');
+        if (uid && onlineUsers[uid]) {
+          if (statusEl) { statusEl.textContent = 'Online';
+            statusEl.className = 'status online'; }
+          if (dotEl) { dotEl.className = 'online-dot online'; }
+        } else {
+          if (statusEl) { statusEl.textContent = 'Offline';
+            statusEl.className = 'status'; }
+          if (dotEl) { dotEl.className = 'online-dot'; }
+        }
+      });
+    }
+
+    // =============================================
+    // LOAD USER DATA
+    // =============================================
+    function loadUserData(uid) {
+      db.ref('users/' + uid).once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          currentUserData = data;
+          currentUserData.id = uid;
+          followingList = data.following || {};
+
+          let followers = data.followers || 0;
+          if (typeof followers === 'object') {
+            followers = Object.keys(followers || {}).length;
+          }
+          currentUserData.followers = followers;
+
+          localStorage.setItem('username', data.username || 'user');
+          localStorage.setItem('avatarUrl', data.avatarUrl || '');
+          localStorage.setItem('walletCoins', data.coins || 0);
+          updateUI();
+          loadPosts();
+          loadMessageUsers();
+          loadRedeemOffers();
+          loadMyPosts();
+          loadFollowingList();
+          loadWithdrawHistory();
+          initNewWheel();
+          loadPromoVideos();
+          updateSpinStatus();
+        } else {
+          const newUser = {
+            username: 'User',
+            handle: 'user_' + uid.substring(0, 6),
+            avatarUrl: DEFAULT_AVATAR,
+            bio: 'Hello, I\'m on SOCIAL SPIN!',
+            coins: 0,
+            spinCount: 0,
+            joined: Date.now(),
+            posts: 0,
+            followers: 0,
+            following: 0,
+            verified: false
+          };
+          db.ref('users/' + uid).set(newUser);
+          currentUserData = newUser;
+          currentUserData.id = uid;
+          followingList = {};
+          localStorage.setItem('username', newUser.username);
+          localStorage.setItem('avatarUrl', newUser.avatarUrl);
+          localStorage.setItem('walletCoins', 0);
+          updateUI();
+          loadPosts();
+          loadMessageUsers();
+          loadRedeemOffers();
+          loadMyPosts();
+          initNewWheel();
+          loadPromoVideos();
+          updateSpinStatus();
+        }
+      });
+    }
+
+    function updateUI() {
+      if (!currentUserData) return;
+      const coins = currentUserData.coins || 0;
+      document.getElementById('homeCoins').textContent = coins;
+      document.getElementById('withdrawBalance').innerHTML = '🪙 ' + coins;
+      document.getElementById('spinCoins').textContent = coins;
+      document.getElementById('promoCoins').textContent = coins;
+
+      const pn = document.getElementById('profileNameDisplay');
+      const pu = document.getElementById('profileUsername');
+      const pc = document.getElementById('postCount');
+      const fc = document.getElementById('followerCount');
+      const flc = document.getElementById('followingCount');
+      const avatarImg = document.getElementById('profileAvatarImg');
+      const homeName = document.getElementById('homeUserName');
+
+      if (pn) pn.innerText = currentUserData.username || 'User';
+      if (homeName) homeName.innerText = currentUserData.username || 'User';
+      if (pu) pu.innerText = '@' + (currentUserData.handle || 'user');
+      if (pc) pc.innerText = currentUserData.posts || 0;
+      if (fc) fc.innerText = currentUserData.followers || 0;
+      if (flc) flc.innerText = currentUserData.following || 0;
+
+      if (currentUserData.avatarUrl && currentUserData.avatarUrl !== '') {
+        avatarImg.style.display = 'block';
+        avatarImg.src = currentUserData.avatarUrl;
+      } else {
+        avatarImg.style.display = 'block';
+        avatarImg.src = DEFAULT_AVATAR;
+      }
+
+      localStorage.setItem('username', currentUserData.username || 'User');
+      localStorage.setItem('avatarUrl', currentUserData.avatarUrl || '');
+      localStorage.setItem('walletCoins', currentUserData.coins || 0);
+    }
+
+    function saveUserData() {
+      if (!currentUser || !currentUserData) return;
+      db.ref('users/' + currentUser.uid).update({
+        username: currentUserData.username,
+        handle: currentUserData.handle,
+        bio: currentUserData.bio || '',
+        coins: currentUserData.coins || 0,
+        spinCount: currentUserData.spinCount || 0,
+        posts: currentUserData.posts || 0,
+        followers: currentUserData.followers || 0,
+        following: currentUserData.following || 0,
+        avatarUrl: currentUserData.avatarUrl || DEFAULT_AVATAR,
+        verified: currentUserData.verified || false
+      });
+    }
+
+    // =============================================
+    // AUTH FUNCTIONS
+    // =============================================
+    document.getElementById('loginBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value;
+      const pass = document.getElementById('loginPassword').value;
+      const errorEl = document.getElementById('authError');
+      errorEl.style.display = 'none';
+      if (!email || !pass) {
+        errorEl.textContent = 'Please fill all fields';
+        errorEl.style.display = 'block';
+        return;
+      }
+      auth.signInWithEmailAndPassword(email, pass).catch((err) => {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+      });
+    });
+
+    document.getElementById('signupBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const pass = document.getElementById('signupPassword').value;
+      const errorEl = document.getElementById('authError');
+      errorEl.style.display = 'none';
+      if (!name || !email || !pass) {
+        errorEl.textContent = 'Please fill all fields';
+        errorEl.style.display = 'block';
+        return;
+      }
+      if (pass.length < 6) {
+        errorEl.textContent = 'Password must be at least 6 characters';
+        errorEl.style.display = 'block';
+        return;
+      }
+      auth.createUserWithEmailAndPassword(email, pass).then((result) => {
+        db.ref('users/' + result.user.uid).set({
+          username: name,
+          handle: name.toLowerCase().replace(/\s/g, '_'),
+          avatarUrl: DEFAULT_AVATAR,
+          bio: 'Hello, I\'m on SOCIAL SPIN!',
+          coins: 0,
+          spinCount: 0,
+          joined: Date.now(),
+          posts: 0,
+          followers: 0,
+          following: 0,
+          verified: false
+        });
+      }).catch((err) => {
+        errorEl.textContent = err.message;
+        errorEl.style.display = 'block';
+      });
+    });
+
+    document.getElementById('switchToSignup').addEventListener('click', function() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'block';
+      document.getElementById('authError').style.display = 'none';
+    });
+
+    document.getElementById('switchToLogin').addEventListener('click', function() {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('authError').style.display = 'none';
+    });
+
+    // =============================================
+    // NAVIGATION
+    // =============================================
+    let currentPage = 'pageHome';
+    let pageHistory = [];
+
+    function navigateTo(pageId, addToHistory = true) {
+      if (pageId === currentPage) return;
+      const oldPage = document.getElementById(currentPage);
+      const newPage = document.getElementById(pageId);
+      if (!oldPage || !newPage) return;
+
+      if (addToHistory) {
+        pageHistory.push(currentPage);
+      }
+
+      oldPage.classList.remove('active');
+      oldPage.classList.add('slide-out');
+      setTimeout(() => {
+        oldPage.classList.remove('slide-out');
+        newPage.classList.add('active');
+        currentPage = pageId;
+        newPage.scrollTop = 0;
+      }, 350);
+    }
+
+    function goBack() {
+      if (pageHistory.length === 0) {
+        navigateTo('pageHome');
+        return;
+      }
+      const prev = pageHistory.pop();
+      navigateTo(prev, false);
+    }
+
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        const pageId = this.dataset.page;
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        this.classList.add('active');
+        navigateTo(pageId);
+        if (pageId === 'pageWithdraw') loadWithdrawHistory();
+        if (pageId === 'pageMessage') loadMessageUsers();
+        if (pageId === 'pageSpin') loadRedeemOffers();
+        if (pageId === 'pageProfile') loadMyPosts();
+      });
+    });
+
+    // =============================================
+    // PROMO PAGE NAVIGATION
+    // =============================================
+    document.getElementById('promoPageBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateTo('pagePromo');
+      loadPromoVideos();
+    });
+
+    document.getElementById('promoBackBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      goBack();
+    });
+
+    // =============================================
+    // SETTINGS MODAL
+    // =============================================
+    document.getElementById('settingsBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('settingsModal').classList.add('show');
+    });
+
+    document.getElementById('closeSettings').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('settingsModal').classList.remove('show');
+    });
+
+    document.getElementById('settingsModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+      }
+    });
+
+    document.getElementById('editProfileSetting').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('settingsModal').classList.remove('show');
+      document.getElementById('editUsernameInput').value = currentUserData.username || '';
+      document.getElementById('editHandleInput').value = currentUserData.handle || '';
+      document.getElementById('editBioInput').value = currentUserData.bio || '';
+      document.getElementById('editProfileModal').classList.add('show');
+    });
+
+    document.getElementById('closeEditProfile').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('editProfileModal').classList.remove('show');
+    });
+
+    document.getElementById('editProfileModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+      }
+    });
+
+    document.getElementById('saveProfileBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('editUsernameInput').value.trim();
+      const handle = document.getElementById('editHandleInput').value.trim();
+      const bio = document.getElementById('editBioInput').value.trim();
+
+      if (!name) { alert('Display name cannot be empty'); return; }
+      if (!handle) { alert('Username cannot be empty'); return; }
+
+      currentUserData.username = name;
+      currentUserData.handle = handle.replace(/\s/g, '_').toLowerCase();
+      currentUserData.bio = bio || 'Hello, I\'m on SOCIAL SPIN!';
+
+      if (!currentUserData.avatarUrl || currentUserData.avatarUrl === '') {
+        currentUserData.avatarUrl = DEFAULT_AVATAR;
+      }
+
+      updateUI();
+      saveUserData();
+      showToast('✅ Profile updated successfully!', 'success');
+      document.getElementById('editProfileModal').classList.remove('show');
+    });
+
+    document.getElementById('logoutSetting').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (confirm('Are you sure you want to logout?')) {
+        setOnlineStatus(currentUser.uid, false);
+        document.getElementById('settingsModal').classList.remove('show');
+        auth.signOut();
+      }
+    });
+
+    // =============================================
+    // CREATE POST
+    // =============================================
+    document.getElementById('addStoryBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('createPostModal').classList.add('show');
+      document.getElementById('postInput').value = '';
+      document.getElementById('postImageUrlInput').value = '';
+      document.getElementById('postPhotoPreview').classList.remove('show');
+      document.getElementById('postPhotoPreview').src = '';
+      document.getElementById('postRemovePhotoBtn').style.display = 'none';
+      postImageUrl = '';
+    });
+
+    document.getElementById('createPostModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+      }
+    });
+
+    document.getElementById('postPreviewBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      const url = document.getElementById('postImageUrlInput').value.trim();
+      if (!url) {
+        showToast('Please paste an image URL first', 'error');
+        return;
+      }
+      const img = new Image();
+      img.onload = function() {
+        postImageUrl = url;
+        document.getElementById('postPhotoPreview').src = url;
+        document.getElementById('postPhotoPreview').classList.add('show');
+        document.getElementById('postRemovePhotoBtn').style.display = 'inline-block';
+        showToast('✅ Image preview loaded!', 'success');
+      };
+      img.onerror = function() {
+        showToast('❌ Invalid image URL. Please check the link.', 'error');
+      };
+      img.src = url;
+    });
+
+    document.getElementById('postRemovePhotoBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      postImageUrl = '';
+      document.getElementById('postImageUrlInput').value = '';
+      document.getElementById('postPhotoPreview').classList.remove('show');
+      document.getElementById('postPhotoPreview').src = '';
+      this.style.display = 'none';
+    });
+
+    document.getElementById('submitPostBtn').addEventListener('click', async function(e) {
+      e.preventDefault();
+      const title = document.getElementById('postInput').value.trim();
+      if (!title) {
+        showToast('Please write something!', 'error');
+        return;
+      }
+
+      this.textContent = '⏳ Posting...';
+      this.disabled = true;
+
+      const avatarUrl = currentUserData.avatarUrl || DEFAULT_AVATAR;
+
+      const postData = {
+        uid: currentUser.uid,
+        username: currentUserData.username || 'User',
+        avatarUrl: avatarUrl,
+        title: title,
+        image: postImageUrl || '',
+        likes: 0,
+        likedBy: {},
+        comments: [],
+        timestamp: Date.now(),
+        time: new Date().toLocaleString()
+      };
+
+      db.ref('posts').push(postData);
+      currentUserData.posts = (currentUserData.posts || 0) + 1;
+      saveUserData();
+
+      this.textContent = '✅ Posted!';
+      setTimeout(() => {
+        this.textContent = '📤 Post Now';
+        this.disabled = false;
+      }, 1500);
+
+      document.getElementById('createPostModal').classList.remove('show');
+      showToast('✅ Post published successfully!', 'success');
+
+      document.getElementById('postInput').value = '';
+      document.getElementById('postImageUrlInput').value = '';
+      document.getElementById('postPhotoPreview').classList.remove('show');
+      document.getElementById('postPhotoPreview').src = '';
+      document.getElementById('postRemovePhotoBtn').style.display = 'none';
+      postImageUrl = '';
+    });
+
+    // =============================================
+    // SEARCH
+    // =============================================
+    document.getElementById('searchBackBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      goBack();
+    });
+
+    document.getElementById('searchPageInput').addEventListener('input', function() {
+      const query = this.value.trim();
+      const clearBtn = document.getElementById('searchClearBtn');
+      if (query) {
+        clearBtn.classList.add('show');
+        searchUsers(query);
+      } else {
+        clearBtn.classList.remove('show');
+        document.getElementById('searchResultsContainer').innerHTML = `
+            <div class="empty-state">
+              <div class="icon">🔍</div>
+              <div class="title">Search Users</div>
+              <div class="sub">Type above to find users</div>
+            </div>
+          `;
+      }
+    });
+
+    document.getElementById('searchClearBtn').addEventListener('click', function() {
+      document.getElementById('searchPageInput').value = '';
+      this.classList.remove('show');
+      document.getElementById('searchResultsContainer').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">🔍</div>
+            <div class="title">Search Users</div>
+            <div class="sub">Type above to find users</div>
+          </div>
+        `;
+      document.getElementById('searchPageInput').focus();
+    });
+
+    function searchUsers(query) {
+      if (!query) return;
+      db.ref('users').once('value', (snapshot) => {
+        const container = document.getElementById('searchResultsContainer');
+        let html = '';
+        let found = false;
+        const q = query.toLowerCase();
+
+        snapshot.forEach(child => {
+          const user = child.val();
+          if (child.key !== currentUser.uid) {
+            const nameMatch = user.username && user.username.toLowerCase().includes(q);
+            const handleMatch = user.handle && user.handle.toLowerCase().includes(q);
+            if (nameMatch || handleMatch) {
+              found = true;
+              const isFollowing = followingList && followingList[child.key];
+              const avatarUrl = user.avatarUrl || DEFAULT_AVATAR;
+              const isVerified = user.verified || false;
+              const verifiedBadge = isVerified ?
+                `<span class="verified-badge"><span class="material-icons">verified</span>Verified</span>` : '';
+
+              html += `
+                  <div class="user-result-card" data-uid="${child.key}">
+                    <div class="user-avatar">
+                      <img src="${avatarUrl}">
+                    </div>
+                    <div class="user-info">
+                      <div class="name">${user.username || 'User'} ${verifiedBadge}</div>
+                      <div class="handle">@${user.handle || 'user'}</div>
+                    </div>
+                    <button class="follow-btn ${isFollowing ? 'following' : 'follow'}" data-uid="${child.key}">
+                      ${isFollowing ? '✓ Following' : 'Follow'}
+                    </button>
+                  </div>
+                `;
+            }
+          }
+        });
+
+        container.innerHTML = found ? html : `
+            <div class="empty-state">
+              <div class="icon">😕</div>
+              <div class="title">No users found</div>
+              <div class="sub">No users match "${query}"</div>
+            </div>
+          `;
+      });
+    }
+
+    // =============================================
+    // FOLLOW SYSTEM
+    // =============================================
+    function loadFollowingList() {
+      if (!currentUser) return;
+      db.ref('users/' + currentUser.uid + '/following').on('value', (snapshot) => {
+        followingList = snapshot.val() || {};
+        updateFollowButtons();
+      });
+    }
+
+    function updateFollowButtons() {
+      document.querySelectorAll('.follow-btn').forEach(btn => {
+        const uid = btn.dataset.uid;
+        if (followingList && followingList[uid]) {
+          btn.textContent = '✓ Following';
+          btn.className = 'follow-btn following';
+        } else {
+          btn.textContent = 'Follow';
+          btn.className = 'follow-btn follow';
+        }
+      });
+    }
+
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.follow-btn');
+      if (!btn) return;
+      const userId = btn.dataset.uid;
+      if (!userId) return;
+
+      const isFollowing = followingList && followingList[userId];
+
+      if (isFollowing) {
+        delete followingList[userId];
+        db.ref('users/' + currentUser.uid + '/following/' + userId).remove();
+        db.ref('users/' + userId + '/followers/' + currentUser.uid).remove();
+        btn.textContent = 'Follow';
+        btn.className = 'follow-btn follow';
+        updateFollowerCount(userId);
+      } else {
+        if (!followingList) followingList = {};
+        followingList[userId] = true;
+        db.ref('users/' + currentUser.uid + '/following/' + userId).set(true);
+        db.ref('users/' + userId + '/followers/' + currentUser.uid).set(true);
+        btn.textContent = '✓ Following';
+        btn.className = 'follow-btn following';
+        updateFollowerCount(userId);
+      }
+
+      const followingCount = Object.keys(followingList).length;
+      currentUserData.following = followingCount;
+      saveUserData();
+      updateUI();
+    });
+
+    function updateFollowerCount(userId) {
+      db.ref('users/' + userId + '/followers').once('value', (snap) => {
+        const followers = snap.val() || {};
+        const count = Object.keys(followers).length;
+        db.ref('users/' + userId + '/followersCount').set(count);
+        db.ref('users/' + userId + '/followers').set(followers);
+
+        if (userId === currentUser.uid) {
+          currentUserData.followers = count;
+          document.getElementById('followerCount').textContent = count;
+          saveUserData();
+        }
+      });
+    }
+
+    // =============================================
+    // VIEW USER PROFILE
+    // =============================================
+    document.addEventListener('click', function(e) {
+      const card = e.target.closest('.user-result-card');
+      if (card) {
+        const uid = card.dataset.uid;
+        if (uid) showUserProfile(uid);
+      }
+
+      const postHeader = e.target.closest('.post-header');
+      if (postHeader) {
+        const uid = postHeader.dataset.uid;
+        if (uid && uid !== currentUser.uid) {
+          showUserProfile(uid);
+        }
+      }
+    });
+
+    function showUserProfile(userId) {
+      db.ref('users/' + userId).once('value', (snapshot) => {
+        const user = snapshot.val();
+        if (!user) return;
+
+        let followersCount = user.followers || 0;
+        if (typeof followersCount === 'object') {
+          followersCount = Object.keys(followersCount || {}).length;
+        }
+
+        const container = document.getElementById('userProfileContent');
+        const isFollowing = followingList && followingList[userId];
+        const avatarUrl = user.avatarUrl || DEFAULT_AVATAR;
+        const isVerified = user.verified || false;
+        const verifiedBadge = isVerified ?
+          `<span class="verified-badge"><span class="material-icons">verified</span>Verified</span>` : '';
+
+        container.innerHTML = `
+            <div style="background:var(--white);border-radius:var(--radius);padding:20px;text-align:center;box-shadow:var(--shadow);margin-bottom:16px;">
+              <div style="width:80px;height:80px;border-radius:50%;margin:0 auto 12px;overflow:hidden;border:4px solid var(--primary);">
+                <img src="${avatarUrl}" style="width:100%;height:100%;object-fit:cover;">
+              </div>
+              <div style="font-size:20px;font-weight:800;color:var(--dark);">${user.username || 'User'} ${verifiedBadge}</div>
+              <div style="font-size:13px;color:var(--gray);">@${user.handle || 'user'}</div>
+              <div style="font-size:14px;color:var(--gray);margin-top:4px;">${user.bio || ''}</div>
+              <div style="display:flex;justify-content:center;gap:30px;margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,0,0,0.04);">
+                <div style="text-align:center;"><div style="font-weight:800;font-size:18px;color:var(--dark);">${user.posts || 0}</div><div style="font-size:12px;color:var(--gray);">Posts</div></div>
+                <div style="text-align:center;"><div style="font-weight:800;font-size:18px;color:var(--dark);">${followersCount}</div><div style="font-size:12px;color:var(--gray);">Followers</div></div>
+                <div style="text-align:center;"><div style="font-weight:800;font-size:18px;color:var(--dark);">${user.following || 0}</div><div style="font-size:12px;color:var(--gray);">Following</div></div>
+              </div>
+              <div style="display:flex;gap:10px;margin-top:14px;justify-content:center;">
+                <button class="follow-btn ${isFollowing ? 'following' : 'follow'}" data-uid="${userId}" style="padding:8px 24px;border-radius:30px;border:none;font-weight:700;font-size:13px;cursor:pointer;transition:0.2s;touch-action:manipulation;">
+                  ${isFollowing ? '✓ Following' : 'Follow'}
+                </button>
+                <button class="msg-user-btn" data-uid="${userId}" style="padding:8px 24px;border-radius:30px;border:none;font-weight:700;font-size:13px;cursor:pointer;transition:0.2s;background:var(--primary);color:white;touch-action:manipulation;">💬 Message</button>
+              </div>
+            </div>
+            <div style="font-weight:700;font-size:16px;color:var(--dark);margin:12px 0 8px;">📝 ${user.username}'s Posts</div>
+            <div id="userPostsContent"></div>
+          `;
+
+        navigateTo('pageUserProfile');
+
+        db.ref('posts').orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+          const postsContainer = document.getElementById('userPostsContent');
+          let html = '';
+          snapshot.forEach(child => {
+            const post = child.val();
+            if (post.uid === userId) {
+              const imgDisplay = post.image ?
+                `<img src="${post.image}" style="width:100%;border-radius:var(--radius-sm);max-height:200px;object-fit:cover;margin-top:8px;">` :
+                '';
+              html += `
+                  <div style="background:var(--white);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:8px;box-shadow:var(--shadow);">
+                    <div style="font-weight:500;font-size:14px;color:var(--dark);">${post.title || 'Post'}</div>
+                    ${imgDisplay}
+                    <div style="font-size:12px;color:var(--gray);margin-top:6px;">❤️ ${post.likes || 0} Likes • ${post.time || ''}</div>
+                  </div>
+                `;
+            }
+          });
+          postsContainer.innerHTML = html || '<div style="color:var(--gray);padding:12px;text-align:center;">No posts yet</div>';
+        });
+      });
+    }
+
+    document.getElementById('backFromUserProfile').addEventListener('click', function(e) {
+      e.preventDefault();
+      goBack();
+    });
+
+    // =============================================
+    // MESSAGE BUTTON
+    // =============================================
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.msg-user-btn');
+      if (btn) {
+        openChat(btn.dataset.uid);
+      }
+    });
+
+    // =============================================
+    // POSTS
+    // =============================================
+    function loadPosts() {
+      if (!currentUser) return;
+      db.ref('posts').orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+        const feed = document.getElementById('postFeed');
+        feed.innerHTML = '';
+        const posts = [];
+        snapshot.forEach(child => posts.push({ id: child.key, ...child.val() }));
+        posts.reverse().forEach(post => {
+          feed.appendChild(createPostElement(post));
+        });
+      });
+    }
+
+    function createPostElement(post) {
+      const div = document.createElement('div');
+      div.className = 'post-card';
+      div.dataset.postId = post.id;
+
+      const likes = post.likes || 0;
+      const comments = post.comments || [];
+      const isOwner = currentUser && post.uid === currentUser.uid;
+      const isLiked = currentUser && post.likedBy && post.likedBy[currentUser.uid];
+      const avatarUrl = post.avatarUrl || DEFAULT_AVATAR;
+
+      const isVerified = allUsersData[post.uid] && allUsersData[post.uid].verified || false;
+      const verifiedBadge = isVerified ?
+        `<span class="verified-badge"><span class="material-icons">verified</span>Verified</span>` : '';
+
+      const imageDisplay = post.image ?
+        `<img src="${post.image}" class="post-image" onerror="this.style.display='none'">` :
+        '';
+
+      div.innerHTML = `
+          <div class="post-header" data-uid="${post.uid}">
+            <div class="post-avatar">
+              <img src="${avatarUrl}">
+            </div>
+            <div class="post-user-info">
+              <div class="username">${post.username || 'User'} ${verifiedBadge}</div>
+              <div class="time">${post.time || 'Now'}</div>
+            </div>
+            ${isOwner ? `<span style="color:var(--gray);cursor:pointer;font-size:18px;touch-action:manipulation;" class="delete-post" data-id="${post.id}">✕</span>` : ''}
+          </div>
+          <div class="post-content">
+            <div class="post-text">${post.title || ''}</div>
+            ${imageDisplay}
+          </div>
+          <div class="post-actions">
+            <button class="post-action-btn like-btn ${isLiked ? 'liked' : ''}" data-id="${post.id}">
+              <span class="icon">${isLiked ? '❤️' : '🤍'}</span> <span class="like-count">${likes}</span>
+            </button>
+            <button class="post-action-btn comment-open" data-id="${post.id}">
+              <span class="icon">💬</span> <span>${comments.length}</span>
+            </button>
+          </div>
+        `;
+      return div;
+    }
+
+    // =============================================
+    // LIKE
+    // =============================================
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.like-btn');
+      if (!btn) return;
+      const postId = btn.dataset.id;
+      const postRef = db.ref('posts/' + postId);
+
+      postRef.transaction((post) => {
+        if (post) {
+          const likedBy = post.likedBy || {};
+          const isLiked = likedBy[currentUser.uid];
+          if (isLiked) {
+            delete likedBy[currentUser.uid];
+            post.likes = (post.likes || 1) - 1;
+          } else {
+            likedBy[currentUser.uid] = true;
+            post.likes = (post.likes || 0) + 1;
+          }
+          post.likedBy = likedBy;
+        }
+        return post;
+      });
+    });
+
+    // =============================================
+    // DELETE POST
+    // =============================================
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.delete-post');
+      if (btn && confirm('Delete this post?')) {
+        db.ref('posts/' + btn.dataset.id).remove();
+        showToast('✅ Post deleted', 'success');
+      }
+    });
+
+    // =============================================
+    // COMMENTS
+    // =============================================
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.comment-open');
+      if (btn) {
+        const postId = btn.dataset.id;
+        showCommentModal(postId);
+      }
+    });
+
+    function showCommentModal(postId) {
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+          position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);
+          display:flex;align-items:flex-end;justify-content:center;z-index:1000;
+          animation:fadeIn 0.3s ease;
+        `;
+      modal.id = 'commentModal';
+
+      const sheet = document.createElement('div');
+      sheet.style.cssText = `
+          background:white;width:100%;max-width:430px;max-height:80vh;
+          border-radius:20px 20px 0 0;padding:20px;overflow-y:auto;
+          animation:slideUp 0.3s ease;
+        `;
+
+      sheet.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <h3 style="font-weight:700;font-size:18px;">💬 Comments</h3>
+            <button id="closeCommentModal" style="background:none;border:none;font-size:24px;cursor:pointer;touch-action:manipulation;">✕</button>
+          </div>
+          <div id="commentList" style="max-height:300px;overflow-y:auto;"></div>
+          <div style="display:flex;gap:8px;margin-top:12px;">
+            <input type="text" id="commentInput" placeholder="Write a comment..." style="flex:1;padding:10px 16px;border:2px solid var(--light-gray);border-radius:var(--radius-sm);outline:none;font-size:14px;">
+            <button id="postCommentBtn" style="padding:10px 20px;background:var(--primary);color:white;border:none;border-radius:var(--radius-sm);font-weight:700;cursor:pointer;touch-action:manipulation;">Post</button>
+          </div>
+        `;
+
+      modal.appendChild(sheet);
+      document.body.appendChild(modal);
+
+      db.ref('posts/' + postId + '/comments').on('value', (snapshot) => {
+        const container = document.getElementById('commentList');
+        let html = '';
+        snapshot.forEach(child => {
+          const c = child.val();
+          html += `
+              <div style="padding:8px 0;border-bottom:1px solid var(--light-gray);">
+                <div style="font-weight:600;font-size:13px;">${c.username || 'User'}</div>
+                <div style="font-size:14px;margin-top:2px;">${c.text}</div>
+                <div style="font-size:10px;color:var(--gray);margin-top:2px;">${c.time || ''}</div>
+              </div>
+            `;
+        });
+        container.innerHTML = html || '<div style="color:var(--gray);padding:12px;text-align:center;">No comments yet</div>';
+      });
+
+      document.getElementById('closeCommentModal').addEventListener('click', function() {
+        modal.remove();
+      });
+
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) modal.remove();
+      });
+
+      document.getElementById('postCommentBtn').addEventListener('click', function() {
+        const input = document.getElementById('commentInput');
+        if (input && input.value.trim()) {
+          db.ref('posts/' + postId + '/comments').push({
+            username: currentUserData.username || 'User',
+            text: input.value.trim(),
+            timestamp: Date.now(),
+            time: new Date().toLocaleString()
+          });
+          input.value = '';
+        }
+      });
+    }
+
+    // =============================================
+    // NEW WHEEL
+    // =============================================
+    function initNewWheel() {
+      const container = document.getElementById('newLightsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+      const totalLights = 24;
+      const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#00ff00', '#ff9f43', '#9b59b6'];
+      const radius = 136;
+
+      for (let i = 0; i < totalLights; i++) {
+        const light = document.createElement('div');
+        light.className = 'new-led-light';
+        const angle = (360 / totalLights) * i;
+        const color = colors[i % colors.length];
+        light.style.backgroundColor = color;
+        light.style.boxShadow = `0 0 10px ${color}, 0 0 20px ${color}`;
+        light.style.transform = `rotate(${angle}deg)`;
+        light.style.transformOrigin = `50% ${radius}px`;
+        container.appendChild(light);
+      }
+    }
+
+    let newLightRotation = 0;
+    let newLightSpeed = 0.5;
+
+    function animateNewLights() {
+      newLightSpeed += (newTargetLightSpeed - newLightSpeed) * 0.05;
+      newLightRotation -= newLightSpeed;
+      const container = document.getElementById('newLightsContainer');
+      if (container) {
+        container.style.transform = `rotate(${newLightRotation}deg)`;
+      }
+      requestAnimationFrame(animateNewLights);
+    }
+    animateNewLights();
+
+    // =============================================
+    // PROMO CODE CLAIM
+    // =============================================
+    document.getElementById('claimPromoBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      const code = document.getElementById('promoInput').value.trim().toUpperCase();
+      if (!code) { showToast('Please enter a promo code', 'error'); return; }
+
+      db.ref('promoVideos').orderByChild('code').equalTo(code).once('value', (snapshot) => {
+        let found = false;
+        snapshot.forEach(child => {
+          const video = child.val();
+          const videoId = child.key;
+          found = true;
+
+          if (video.claimedBy && video.claimedBy[currentUser.uid]) {
+            showToast('❌ You already used this promo code!', 'error');
+            return;
+          }
+
+          const coins = video.coins || 5;
+          currentUserData.coins = (currentUserData.coins || 0) + coins;
+          updateUI();
+          saveUserData();
+
+          db.ref('promoVideos/' + videoId + '/claimedBy/' + currentUser.uid).set(true);
+          db.ref('promoVideos/' + videoId + '/usedCount').transaction((current) => {
+            return (current || 0) + 1;
+          });
+
+          db.ref('claimedPromoCodes/' + currentUser.uid + '/' + videoId).set({
+            claimedAt: Date.now(),
+            coins: coins
+          });
+
+          addCoinHistory(currentUser.uid, 'promo', coins, 'Promo code: ' + code, '🎁');
+
+          showToast('🎉 Promo code redeemed! +' + coins + ' coins', 'success');
+          document.getElementById('promoInput').value = '';
+          loadPromoVideos();
+        });
+
+        if (!found) {
+          db.ref('promoCodes/' + code).once('value', (snap) => {
+            const data = snap.val();
+            if (data && !data.used) {
+              const coins = data.coins || 10;
+              currentUserData.coins = (currentUserData.coins || 0) + coins;
+              db.ref('promoCodes/' + code).update({ used: true, usedBy: currentUser.uid });
+              updateUI();
+              saveUserData();
+
+              addCoinHistory(currentUser.uid, 'promo', coins, 'Promo code: ' + code, '🎁');
+
+              showToast('🎉 Promo code redeemed! +' + coins + ' coins', 'success');
+              document.getElementById('promoInput').value = '';
+            } else {
+              showToast('❌ Invalid or already used code', 'error');
+            }
+          });
+        }
+      });
+    });
+
+    // =============================================
+    // REDEEM OFFERS
+    // =============================================
+    function loadRedeemOffers() {
+      db.ref('redeemOffers').orderByChild('timestamp').limitToLast(20).on('value', (snapshot) => {
+        const container = document.getElementById('redeemOffersList');
+        let html = '';
+        snapshot.forEach(child => {
+          const offer = child.val();
+          html += `
+              <div style="display:flex;align-items:center;gap:12px;padding:10px;background:var(--light-gray);border-radius:var(--radius-sm);margin-bottom:8px;">
+                <div style="font-size:28px;">${offer.logo || '💎'}</div>
+                <div style="flex:1;">
+                  <div style="font-weight:600;font-size:14px;">${offer.title || 'Redeem Offer'}</div>
+                  <div style="font-size:12px;color:var(--gray);">${offer.coins || 0} coins • ${offer.amount || '₹0'}</div>
+                </div>
+                <button class="redeem-offer-btn" data-id="${child.key}" data-coins="${offer.coins || 0}" data-code="${offer.code || ''}" style="padding:6px 18px;background:linear-gradient(135deg,#FFD700,#F0A500);color:var(--dark);border:none;border-radius:30px;font-weight:700;font-size:12px;cursor:pointer;touch-action:manipulation;">Redeem</button>
+              </div>
+            `;
+        });
+        container.innerHTML = html || '<div class="empty-state"><div class="icon">🎁</div><div class="sub">No offers available</div></div>';
+      });
+    }
+
+    document.addEventListener('click', function(e) {
+      const btn = e.target.closest('.redeem-offer-btn');
+      if (!btn) return;
+      const coins = parseInt(btn.dataset.coins);
+      const code = btn.dataset.code;
+
+      if ((currentUserData.coins || 0) < coins) {
+        showToast('❌ You need ' + coins + ' coins to redeem this offer', 'error');
+        return;
+      }
+
+      if (confirm('Redeem this offer for ' + coins + ' coins?')) {
+        currentUserData.coins = (currentUserData.coins || 0) - coins;
+        updateUI();
+        saveUserData();
+
+        db.ref('userRedeems/' + currentUser.uid).push({
+          code: code,
+          coins: coins,
+          time: new Date().toLocaleString(),
+          timestamp: Date.now(),
+          status: 'pending'
+        });
+
+        addCoinHistory(currentUser.uid, 'redeem', -coins, 'Redeemed: ' + code, '💎');
+
+        showToast('✅ Redeem successful!\nCode: ' + code + '\nStatus: Pending', 'success');
+      }
+    });
+
+    // =============================================
+    // WITHDRAW
+    // =============================================
+    function selectAmount(btn) {
+      document.querySelectorAll('.amount-btn').forEach(b => {
+        b.classList.remove('selected');
+      });
+
+      btn.classList.add('selected');
+
+      const coins = parseInt(btn.dataset.coins);
+      const amount = btn.dataset.amount;
+
+      selectedWithdrawData = { coins, amount };
+      document.getElementById('selectedAmountDisplay').textContent = amount;
+
+      const userCoins = currentUserData ? currentUserData.coins || 0 : 0;
+      const withdrawBtn = document.getElementById('withdrawBtn');
+
+      if (userCoins >= coins) {
+        withdrawBtn.disabled = false;
+        withdrawBtn.style.opacity = '1';
+        withdrawBtn.style.cursor = 'pointer';
+      } else {
+        withdrawBtn.disabled = true;
+        withdrawBtn.style.opacity = '0.5';
+        withdrawBtn.style.cursor = 'not-allowed';
+        showToast('❌ You don\'t have enough coins!\nNeed ' + coins + ' coins, you have ' + userCoins, 'error');
+      }
+    }
+
+    document.getElementById('withdrawBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+
+      if (!selectedWithdrawData) {
+        showToast('❌ Please select an amount first', 'error');
+        return;
+      }
+
+      const coins = selectedWithdrawData.coins;
+      const amount = selectedWithdrawData.amount;
+      const userCoins = currentUserData.coins || 0;
+
+      if (userCoins < coins) {
+        showToast('❌ You don\'t have enough coins!\nNeed ' + coins + ' coins, you have ' + userCoins, 'error');
+        return;
+      }
+
+      if (confirm('Withdraw ' + amount + ' (' + coins + ' coins)?')) {
+        currentUserData.coins = userCoins - coins;
+        updateUI();
+        saveUserData();
+
+        const withdrawData = {
+          uid: currentUser.uid,
+          username: currentUserData.username || 'User',
+          avatarUrl: currentUserData.avatarUrl || DEFAULT_AVATAR,
+          coins: coins,
+          amount: amount,
+          status: 'pending',
+          time: new Date().toLocaleString(),
+          timestamp: Date.now(),
+          logo: WITHDRAW_LOGO
+        };
+
+        db.ref('withdrawals').push(withdrawData);
+
+        addCoinHistory(currentUser.uid, 'withdraw', -coins, 'Withdrew: ' + amount, '💳');
+
+        showToast('✅ Withdrawal request sent!\n' + amount + ' (' + coins + ' coins)\nStatus: Pending', 'success');
+
+        document.querySelectorAll('.amount-btn').forEach(b => {
+          b.classList.remove('selected');
+        });
+        document.getElementById('selectedAmountDisplay').textContent = 'None';
+        document.getElementById('withdrawBtn').disabled = true;
+        document.getElementById('withdrawBtn').style.opacity = '0.5';
+        document.getElementById('withdrawBtn').style.cursor = 'not-allowed';
+        selectedWithdrawData = null;
+
+        document.getElementById('withdrawBalance').innerHTML = '🪙 ' + currentUserData.coins;
+
+        loadWithdrawHistory();
+      }
+    });
+
+    // =============================================
+    // WITHDRAW HISTORY
+    // =============================================
+    function loadWithdrawHistory() {
+      if (!currentUser) return;
+      db.ref('withdrawals').orderByChild('uid').equalTo(currentUser.uid).on('value', (snapshot) => {
+        const container = document.getElementById('withdrawHistoryFull');
+        let html = '';
+        let hasData = false;
+
+        snapshot.forEach(child => {
+          const data = child.val();
+          hasData = true;
+
+          let statusText = '🟡 Pending';
+          let statusColor = '#FFA502';
+          let statusClass = 'pending';
+
+          if (data.status === 'approved' || data.status === 'success') {
+            statusText = '✅ Success';
+            statusColor = '#2ED573';
+            statusClass = 'success';
+          } else if (data.status === 'rejected') {
+            statusText = '❌ Rejected';
+            statusColor = '#FF4757';
+            statusClass = 'rejected';
+          }
+
+          let redeemDisplay = '';
+
+          if (data.status === 'approved' || data.status === 'success') {
+            if (data.redeemCode) {
+              redeemDisplay = `
+                  <div style="background:linear-gradient(135deg, #f8f9fe, #eef0fe);padding:14px 16px;border-radius:var(--radius-sm);margin-top:10px;border:2px solid var(--success);">
+                    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+                      <img src="${WITHDRAW_LOGO}" style="width:40px;height:40px;border-radius:10px;object-fit:cover;border:1px solid var(--primary-light);">
+                      <div>
+                        <div style="font-size:11px;color:var(--gray);font-weight:500;">Google Play Redeem Code</div>
+                        <div style="font-size:13px;font-weight:600;color:var(--dark);">${data.amount || '🪙 ' + data.coins}</div>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--white);padding:8px 12px;border-radius:30px;border:1px solid var(--primary-light);">
+                      <span style="font-size:16px;font-weight:700;letter-spacing:3px;color:var(--primary);font-family:monospace;">${data.redeemCode}</span>
+                      <button onclick="copyRedeemCode('${data.redeemCode}')" class="copy-btn">
+                        <i class="material-icons" style="font-size:14px;">content_copy</i> Copy
+                      </button>
+                    </div>
+                  </div>
+                `;
+            }
+          } else if (data.status === 'pending') {
+            redeemDisplay = `
+                <div style="background:var(--light-gray);padding:14px 16px;border-radius:var(--radius-sm);text-align:center;margin-top:10px;border:1px dashed var(--gray);">
+                  <div style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px;">
+                    <img src="${WITHDRAW_LOGO}" style="width:32px;height:32px;border-radius:8px;object-fit:cover;">
+                    <div>
+                      <div style="font-size:11px;color:var(--gray);font-weight:500;">Google Play Redeem Code</div>
+                      <div style="font-size:13px;font-weight:600;color:var(--dark);">${data.amount || '🪙 ' + data.coins}</div>
+                    </div>
+                  </div>
+                  <div style="font-size:12px;color:var(--gray);">⏳ Waiting for admin approval</div>
+                  <div style="font-size:11px;color:var(--gray);margin-top:2px;">🔒 Redeem code will appear after approval</div>
+                </div>
+              `;
+          }
+
+          html += `
+              <div style="background:var(--white);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow);">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <div>
+                    <div style="font-weight:700;font-size:16px;">${data.amount || '🪙 ' + data.coins}</div>
+                    <div style="font-size:12px;color:var(--gray);">${data.time || ''}</div>
+                  </div>
+                  <span style="color:${statusColor};font-weight:600;font-size:12px;padding:4px 12px;border-radius:30px;background:${statusColor}15;">${statusText}</span>
+                </div>
+                ${redeemDisplay}
+              </div>
+            `;
+        });
+
+        container.innerHTML = hasData ? html : `
+            <div class="empty-state">
+              <div class="icon">📭</div>
+              <div class="title">No history found</div>
+              <div class="sub">Your withdrawal requests will appear here</div>
+            </div>
+          `;
+      });
+    }
+
+    document.getElementById('viewHistoryBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      navigateTo('pageWithdrawHistory');
+      loadWithdrawHistory();
+    });
+
+    document.getElementById('backFromHistory').addEventListener('click', function(e) {
+      e.preventDefault();
+      goBack();
+    });
+
+    function copyRedeemCode(code) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          showToast('✅ Redeem code copied to clipboard!', 'success');
+        }).catch(() => {
+          fallbackCopy(code);
+        });
+      } else {
+        fallbackCopy(code);
+      }
+    }
+
+    function fallbackCopy(code) {
+      const textArea = document.createElement('textarea');
+      textArea.value = code;
+      textArea.style.position = 'fixed';
+      textArea.style.left = '-9999px';
+      textArea.style.top = '-9999px';
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast('✅ Redeem code copied to clipboard!', 'success');
+      } catch (err) {
+        showToast('❌ Failed to copy. Please copy manually.', 'error');
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // =============================================
+    // MESSAGES
+    // =============================================
+    function loadMessageUsers() {
+      if (!currentUser) return;
+
+      db.ref('users').on('value', (snapshot) => {
+        const container = document.getElementById('messageUserList');
+        let html = '';
+        let hasUsers = false;
+        const users = [];
+
+        snapshot.forEach(child => {
+          const user = child.val();
+          if (child.key !== currentUser.uid) {
+            users.push({ uid: child.key, ...user });
+          }
+        });
+
+        users.sort((a, b) => {
+          const aOnline = onlineUsers[a.uid] ? 1 : 0;
+          const bOnline = onlineUsers[b.uid] ? 1 : 0;
+          return bOnline - aOnline;
+        });
+
+        users.forEach(user => {
+          const isOnline = onlineUsers[user.uid];
+          hasUsers = true;
+          const avatarUrl = user.avatarUrl || DEFAULT_AVATAR;
+          const statusText = isOnline ? 'Online' : 'Offline';
+          const statusClass = isOnline ? 'online' : '';
+          const dotClass = isOnline ? 'online' : '';
+          const isVerified = user.verified || false;
+          const verifiedBadge = isVerified ?
+            `<span class="verified-badge"><span class="material-icons">verified</span>Verified</span>` : '';
+
+          html += `
+              <div class="msg-row" data-uid="${user.uid}" onclick="openChat('${user.uid}')">
+                <div class="msg-avatar">
+                  <img src="${avatarUrl}" onerror="this.src='${DEFAULT_AVATAR}'">
+                  <div class="online-dot ${dotClass}"></div>
+                </div>
+                <div class="msg-info">
+                  <div class="name">${user.username || 'User'} ${verifiedBadge}</div>
+                  <div class="status ${statusClass}">${statusText}</div>
+                  <div class="last-msg" id="lastMsg_${user.uid}">Tap to chat</div>
+                </div>
+                <div class="msg-time" id="msgTime_${user.uid}"></div>
+              </div>
+            `;
+        });
+
+        container.innerHTML = hasUsers ? html : `
+            <div class="empty-state">
+              <div class="icon">💬</div>
+              <div class="title">No users yet</div>
+              <div class="sub">Search and follow users to start chatting</div>
+            </div>
+          `;
+
+        users.forEach(user => {
+          const chatId = [currentUser.uid, user.uid].sort().join('_');
+          db.ref('messages/' + chatId).orderByChild('timestamp').limitToLast(1).on('value', (snap) => {
+            let lastMsg = '';
+            let lastTime = '';
+            snap.forEach(child => {
+              const msg = child.val();
+              lastMsg = msg.text || '';
+              if (msg.timestamp) {
+                const date = new Date(msg.timestamp);
+                lastTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+              }
             });
-        }, { threshold: 1 });
-        document.querySelectorAll('.counter').forEach(c => counterObserver.observe(c));
-    </script>
+            const lastMsgEl = document.getElementById('lastMsg_' + user.uid);
+            const timeEl = document.getElementById('msgTime_' + user.uid);
+            if (lastMsgEl) {
+              lastMsgEl.textContent = lastMsg || 'Tap to chat';
+            }
+            if (timeEl) {
+              timeEl.textContent = lastTime || '';
+            }
+          });
+        });
+      });
+    }
+
+    window.openChat = function(userId) {
+      if (!userId) return;
+
+      if (chatMessageListeners[selectedChatUser]) {
+        chatMessageListeners[selectedChatUser]();
+      }
+
+      selectedChatUser = userId;
+
+      db.ref('users/' + userId).once('value', (snapshot) => {
+        const user = snapshot.val();
+        if (user) {
+          document.getElementById('chatUserName').textContent = user.username || 'User';
+          document.getElementById('chatUserAvatar').src = user.avatarUrl || DEFAULT_AVATAR;
+          const isOnline = onlineUsers[userId];
+          const statusEl = document.getElementById('chatUserStatusText');
+          if (isOnline) {
+            statusEl.textContent = '🟢 Online';
+            statusEl.className = 'status-text online';
+          } else {
+            statusEl.textContent = '⚪ Offline';
+            statusEl.className = 'status-text';
+          }
+        }
+      });
+
+      navigateTo('pageMessageChat');
+      loadChatMessages(userId);
+    };
+
+    document.getElementById('backFromChat').addEventListener('click', function(e) {
+      e.preventDefault();
+      if (chatMessageListeners[selectedChatUser]) {
+        chatMessageListeners[selectedChatUser]();
+      }
+      goBack();
+    });
+
+    function loadChatMessages(userId) {
+      const chatId = [currentUser.uid, userId].sort().join('_');
+      const container = document.getElementById('chatMessages');
+
+      if (chatMessageListeners[userId]) {
+        chatMessageListeners[userId]();
+      }
+
+      const listener = db.ref('messages/' + chatId).orderByChild('timestamp').on('value', (snapshot) => {
+        let html = '';
+
+        snapshot.forEach(child => {
+          const msg = child.val();
+          const isMe = msg.from === currentUser.uid;
+
+          const msgDate = new Date(msg.timestamp || Date.now());
+          const timeStr = msgDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          html += `
+              <div class="message ${isMe ? 'sent' : 'received'}">
+                ${msg.text}
+                <span class="time">${timeStr}</span>
+              </div>
+            `;
+        });
+
+        container.innerHTML = html || '<div class="empty-state"><div class="icon">💬</div><div class="sub">No messages yet</div></div>';
+        container.scrollTop = container.scrollHeight;
+      });
+
+      chatMessageListeners[userId] = () => {
+        db.ref('messages/' + chatId).off('value', listener);
+      };
+    }
+
+    document.getElementById('sendChatBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      const input = document.getElementById('chatInput');
+      if (input && input.value.trim() && selectedChatUser) {
+        const chatId = [currentUser.uid, selectedChatUser].sort().join('_');
+        const msgData = {
+          from: currentUser.uid,
+          to: selectedChatUser,
+          text: input.value.trim(),
+          time: new Date().toLocaleString(),
+          timestamp: Date.now()
+        };
+        db.ref('messages/' + chatId).push(msgData);
+        input.value = '';
+
+        document.getElementById('typingIndicator').style.display = 'block';
+        setTimeout(() => {
+          document.getElementById('typingIndicator').style.display = 'none';
+        }, 1500);
+      }
+    });
+
+    document.getElementById('chatInput').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('sendChatBtn').click();
+      }
+    });
+
+    // =============================================
+    // PROFILE PHOTO UPLOAD
+    // =============================================
+    document.getElementById('photoUploadBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('photoInput').click();
+    });
+
+    document.getElementById('photoInput').addEventListener('change', function(e) {
+      const file = this.files[0];
+      if (!file) return;
+      if (file.size > 2 * 1024 * 1024) {
+        showToast('File too large. Please select an image under 2MB.', 'error');
+        return;
+      }
+
+      const storageRef = storage.ref('profile_photos/' + currentUser.uid + '/' + Date.now() + '_' + file.name);
+      const uploadTask = storageRef.put(file);
+
+      uploadTask.on('state_changed', null, (error) => {
+        showToast('Upload failed: ' + error.message, 'error');
+      }, () => {
+        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+          currentUserData.avatarUrl = downloadURL;
+          db.ref('users/' + currentUser.uid + '/avatarUrl').set(downloadURL);
+          localStorage.setItem('avatarUrl', downloadURL);
+          updateUI();
+          showToast('✅ Profile photo updated!', 'success');
+        });
+      });
+    });
+
+    // =============================================
+    // LOAD MY POSTS
+    // =============================================
+    function loadMyPosts() {
+      if (!currentUser) return;
+      db.ref('posts').orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+        const container = document.getElementById('myPostsList');
+        let html = '';
+        let count = 0;
+        snapshot.forEach(child => {
+          const post = child.val();
+          if (post.uid === currentUser.uid) {
+            count++;
+            const imgDisplay = post.image ?
+              `<img src="${post.image}" style="width:100%;border-radius:var(--radius-sm);max-height:150px;object-fit:cover;margin-top:6px;" onerror="this.style.display='none'">` :
+              '';
+            html += `
+                <div style="background:var(--white);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:8px;box-shadow:var(--shadow);">
+                  <div style="font-weight:500;font-size:14px;">${post.title || 'Post'}</div>
+                  ${imgDisplay}
+                  <div style="font-size:11px;color:var(--gray);margin-top:4px;">❤️ ${post.likes || 0} Likes • 💬 ${(post.comments || []).length} Comments</div>
+                </div>
+              `;
+          }
+        });
+        container.innerHTML = html || '<div style="color:var(--gray);padding:12px;text-align:center;">You haven\'t posted anything yet</div>';
+        document.getElementById('postCount').textContent = count;
+      });
+    }
+
+    // =============================================
+    // HEADER COIN CLICK - Show Coin History
+    // =============================================
+    document.getElementById('homeCoinBadge').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('coinHistoryModal').classList.add('show');
+      loadCoinHistory();
+    });
+
+    document.getElementById('viewCoinHistoryBtn').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('coinHistoryModal').classList.add('show');
+      loadCoinHistory();
+    });
+
+    document.getElementById('closeCoinHistory').addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('coinHistoryModal').classList.remove('show');
+    });
+
+    document.getElementById('coinHistoryModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.remove('show');
+      }
+    });
+
+    // =============================================
+    // PROMO VIDEOS
+    // =============================================
+    function loadUserClaimedPromoCodes(uid) {
+      if (!uid) return;
+      db.ref('claimedPromoCodes/' + uid).on('value', (snapshot) => {
+        claimedPromoCodes = {};
+        snapshot.forEach(child => {
+          claimedPromoCodes[child.key] = child.val();
+        });
+      });
+    }
+
+    function loadPromoVideos() {
+      if (!currentUser) return;
+
+      db.ref('promoVideos').orderByChild('timestamp').limitToLast(50).on('value', (snapshot) => {
+        const container = document.getElementById('promoVideosList');
+        let html = '';
+        let hasVideos = false;
+
+        const videos = [];
+        snapshot.forEach(child => {
+          videos.push({ id: child.key, ...child.val() });
+        });
+
+        videos.reverse().forEach(video => {
+          const isClaimed = claimedPromoCodes && claimedPromoCodes[video.id];
+          if (isClaimed) return;
+
+          hasVideos = true;
+          const videoId = video.videoId || '';
+          const watchUrl = video.videoLink || `https://youtube.com/watch?v=${videoId}`;
+
+          html += `
+              <div class="promo-video-card" data-video-id="${video.id}">
+                <div class="video-thumb-wrapper">
+                  <img src="${video.thumb || ''}" alt="Thumbnail" onerror="this.src='https://via.placeholder.com/400x225/1A1A2E/FFFFFF?text=No+Image'">
+                  <a href="${watchUrl}" target="_blank" class="watch-overlay">
+                    <div class="watch-btn">▶️ Watch Now</div>
+                  </a>
+                </div>
+                <div class="video-title">${video.title || 'Promo Video'}</div>
+                <div class="video-desc">${video.description || 'Watch this video and get the promo code from the video!'}</div>
+                <div class="promo-time">📅 ${video.time || 'Just now'}</div>
+              </div>
+            `;
+        });
+
+        container.innerHTML = hasVideos ? html : `
+            <div class="empty-state">
+              <div class="icon">🎉</div>
+              <div class="title">All Done!</div>
+              <div class="sub">You've watched all promo videos!</div>
+            </div>
+          `;
+      });
+    }
+
+    console.log('✅ SOCIAL SPIN app - Fixed!');
+    console.log('👑 Admin UID:', ADMIN_UID);
+    console.log('🎯 Spin Balance shows: 0 if no spin, X if has spin');
+    console.log('💡 Users can spin if spinBalance > 0 only');
+    console.log('📌 Admin can give/remove spins from Admin Panel');
+  </script>
+ 
 </body>
 </html>
