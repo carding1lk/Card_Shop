@@ -1467,13 +1467,13 @@ body{
 
         <div class="checkout-price" id="checkoutPriceDisplay">₹50</div>
 
-        <!-- Dynamic QR Code generated for debasisdas@yesfam -->
+        <!-- Dynamic QR Code generated for debulivedas@fam -->
         <div class="qr-container">
             <img id="dynamicQR" src="" alt="UPI QR Code">
         </div>
 
         <div class="upi-tag-box">
-            UPI: <span>debasisdas@yesfam</span>
+            UPI: <span>debulivedas@fam</span>
         </div>
 
         <div class="utr-section">
@@ -1646,7 +1646,7 @@ function openCheckout(product, price){
 
     document.getElementById("checkoutPriceDisplay").innerText = "₹" + price;
     
-    let upiString = `upi://pay?pa=debasisdas@yesfam&pn=RedeemStore&am=${price}&cu=INR`;
+    let upiString = `upi://pay?pa=debulivedas@fam&pn=RedeemStore&am=${price}&cu=INR`;
     let qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=210x210&data=${encodeURIComponent(upiString)}`;
     
     document.getElementById("dynamicQR").src = qrApiUrl;
